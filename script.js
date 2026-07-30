@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const copySubjectBtn = document.getElementById('copySubjectBtn');
     const copyBodyBtn = document.getElementById('copyBodyBtn');
+    const gmailBtn = document.getElementById('gmailBtn');
     const mailtoBtn = document.getElementById('mailtoBtn');
     const toast = document.getElementById('toast');
     const toastMsg = document.getElementById('toastMsg');
@@ -98,7 +99,7 @@ I hope this message finds you well. I am reaching out to formally request an app
 
 WhatsApp is my primary channel for staying in touch with my family, colleagues, and important daily contacts. I believe the ban on my account may have resulted from an automated detection error, as I have never knowingly violated WhatsApp's Terms of Service or Community Guidelines.
 
-I deeply value the safety and integrity of the WhatsApp platform. I kindly request your support team to manually review my account status and reconsider the ban decision. 
+I deeply value the safety and integrity of the WhatsApp platform. I kindly request your support team to manually review my account status and reconsider the ban decision.
 
 If any unintentional violation occurred, I sincerely apologize and assure you that I am committed to maintaining full compliance with all platform guidelines moving forward.
 
@@ -138,8 +139,14 @@ Phone: ${phone}${emailStr}`
         subjectOutput.textContent = subjectText;
         bodyOutput.textContent = bodyText;
 
-        // Configure Mailto Button
-        const mailtoUrl = `mailto:support@whatsapp.com?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText)}`;
+        const targetEmail = "support@whatsapp.com";
+
+        // Configure Gmail Web URL (Direct Compose Window)
+        const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${targetEmail}&su=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText)}`;
+        gmailBtn.setAttribute('href', gmailUrl);
+
+        // Configure Mailto URL (Default Mail Client)
+        const mailtoUrl = `mailto:${targetEmail}?subject=${encodeURIComponent(subjectText)}&body=${encodeURIComponent(bodyText)}`;
         mailtoBtn.setAttribute('href', mailtoUrl);
 
         // Reveal Result Section with Animation
