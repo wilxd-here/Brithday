@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday, My Favorite Person ✨</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&family=Poppins:wght@300;400;600&family=Sacramento&display=swap" rel="stylesheet">
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --primary: #ff758c;
+            --secondary: #ff7eb3;
+            --accent: #ffd1dc;
+            --dark-bg: #0f051d;
+            --text-light: #fff5f7;
+            --glass-bg: rgba(255, 255, 255, 0.12);
+            --glass-border: rgba(255, 255, 255, 0.25);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            overflow: hidden;
+            height: 100vh;
+            width: 100vw;
+            position: relative;
+        }
+
+        /* Canvas Backgrounds */
+        #bg-canvas, #fireworks-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        #fireworks-canvas {
+            z-index: 10;
+        }
+
+        /* Music Controller */
+        .music-player {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            padding: 10px 18px;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            box-shadow: var(--glass-shadow);
+            transition: all 0.3s ease;
+        }
+
+        .music-player:hover {
+            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .music-player i {
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        /* Main Slider */
+        .slider-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            z-index: 2;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(30px) scale(0.95);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        /* Glassmorphism Cards */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 650px;
+            width: 90%;
+            text-align: center;
+            box-shadow: var(--glass-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Typography */
+        h1, h2 {
+            font-family: 'Sacramento', cursive;
+            color: var(--accent);
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(255, 117, 140, 0.5);
+        }
+
+        h1 { font-size: 3.8rem; }
+        h2 { font-size: 3rem; }
+
+        .script-font {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: var(--primary);
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.7;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 20px;
+            font-weight: 300;
+        }
+
+        /* Buttons */
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.4);
+            transition: all 0.3s ease;
+            outline: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(255, 117, 140, 0.6);
+        }
+
+        .btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Slide Specific Styles */
+        /* Slide 1: Welcome */
+        .heart-box {
+            font-size: 4rem;
+            color: var(--primary);
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px var(--primary)); }
+            100% { transform: scale(1.15); filter: drop-shadow(0 0 20px var(--secondary)); }
+        }
+
+        /* Slide 2: Countdown/Wish Intro */
+        .cake-icon {
+            font-size: 4.5rem;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
+
+        /* Slide 4: Reasons Grid */
+        .reasons-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .reason-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 16px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .reason-card:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: translateY(-5px);
+        }
+
+        .reason-card i {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        /* Slide 5: Gallery */
+        .gallery-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .gallery-img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery-img:hover {
+            transform: scale(1.08) rotate(2deg);
+            z-index: 5;
+            border-color: var(--primary);
+        }
+
+        /* Slide 6: Candle interactive */
+        .candle-container {
+            margin: 20px 0;
+            cursor: pointer;
+        }
+        
+        .flame {
+            width: 20px;
+            height: 30px;
+            background: #ff9d00;
+            border-radius: 50% 50% 20% 20%;
+            margin: 0 auto 5px;
+            box-shadow: 0 0 20px #ff9d00, 0 0 40px #ff9d00;
+            animation: flicker 0.1s infinite alternate;
+            transition: all 0.5s ease;
+        }
+
+        .flame.off {
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        @keyframes flicker {
+            0% { transform: scale(1) rotate(-2deg); }
+            100% { transform: scale(1.05) rotate(2deg); }
+        }
+
+        /* Slide 7: Quiz / Mini Interaction */
+        .quiz-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 25px;
+            position: relative;
+            min-height: 60px;
+        }
+
+        #btn-no {
+            position: absolute;
+            transition: all 0.2s ease;
+        }
+
+        /* Navigation Controls */
+        .nav-controls {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            padding: 10px 25px;
+            border-radius: 40px;
+            border: 1px solid var(--glass-border);
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .nav-btn:hover {
+            opacity: 1;
+            color: var(--primary);
+            transform: scale(1.2);
+        }
+
+        .dots-container {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .dot.active {
+            background: var(--primary);
+            width: 25px;
+            border-radius: 10px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.8rem; }
+            h2 { font-size: 2.2rem; }
+            .card { padding: 25px; }
+            .reasons-grid { grid-template-columns: 1fr; }
+            .gallery-container { grid-template-columns: repeat(2, 1fr); }
+            .gallery-img { height: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Canvas Floating Hearts -->
+    <canvas id="bg-canvas"></canvas>
+    
+    <!-- Canvas Fireworks for Closing -->
+    <canvas id="fireworks-canvas"></canvas>
+
+    <!-- Audio Player -->
+    <div class="music-player" id="music-toggle">
+        <i class="fa-solid fa-music" id="music-icon"></i>
+        <span style="font-size: 0.85rem;" id="music-text">Putar Musik 🎵</span>
+    </div>
+    <audio id="bg-music" loop preload="auto">
+        <!-- Relaxing Lofi / Romantic Track Placeholder -->
+        <source src="./lagu.mp3"type="audio/mpeg">
+    </audio>
+
+    <!-- Main Slider Container -->
+    <div class="slider-container">
+
+        <!-- SLIDE 1: Welcome -->
+        <div class="slide active" id="slide-1">
+            <div class="card">
+                <div class="heart-box">
+                    <i class="fa-solid fa-envelope-open-text"></i>
+                </div>
+                <h1>Ada Pesan Rahasia...</h1>
+                <p>Sebuah halaman kecil yang dibuat khusus dengan cinta untuk menyambut hari terpesonamu di dunia ini. Siap untuk membukanya?</p>
+                <button class="btn" onclick="nextSlide()">Buka Surat Ini ✨</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: Countdown & Wish -->
+        <div class="slide" id="slide-2">
+            <div class="card">
+                <div class="cake-icon">🎂</div>
+                <h2>Happy Birthday, Cantik!</h2>
+                <p class="script-font">Hari ini adalah tentangmu.</p>
+                <p>Selamat bertambah usia untuk seseorang yang senyumnya selalu berhasil meredakan lelahku. Semoga harimu penuh keajaiban!</p>
+                <button class="btn" onclick="nextSlide()">Lanjut Membaca 💖</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: Memory & Sweet Words -->
+        <div class="slide" id="slide-3">
+            <div class="card">
+                <i class="fa-solid fa-quote-left" style="font-size: 2rem; color: var(--primary); opacity: 0.5;"></i>
+                <h2 style="margin-top: 10px;">Surat Kecil</h2>
+                <p>Waktu berjalan begitu cepat, tapi setiap detik yang dihabiskan mengenalmu terasa sangat berharga. Terima kasih sudah menjadi warna paling indah di antara hariku yang biasa-biasa saja.</p>
+                <p>Kamu adalah kombinasi sempurna dari kebaikan, kehangatan, dan sedikit kejahilan yang selalu kukagumi.</p>
+                <button class="btn" onclick="nextSlide()">Alasan Kamu Spesial 🌸</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: Reasons Why She is Special -->
+        <div class="slide" id="slide-4">
+            <div class="card">
+                <h2>Kenapa Kamu Begitu Spesial?</h2>
+                <div class="reasons-grid">
+                    <div class="reason-card">
+                        <i class="fa-solid fa-face-smile-beam"></i>
+                        <strong>Senyum Murni</strong>
+                        <p style="font-size: 0.8rem; margin: 5px 0 0;">Senyummu punya energi ajaib yang bisa mencairkan suasana.</p>
+                    </div>
+                    <div class="reason-card">
+                        <i class="fa-solid fa-heart"></i>
+                        <strong>Hati Yang Hangat</strong>
+                        <p style="font-size: 0.8rem; margin: 5px 0 0;">Caramu peduli pada hal-hal kecil membuatmu luar biasa.</p>
+                    </div>
+                    <div class="reason-card">
+                        <i class="fa-solid fa-sparkles"></i>
+                        <strong>Tawa Yang Menular</strong>
+                        <p style="font-size: 0.8rem; margin: 5px 0 0;">Dengar kamu ketawa selalu bikin suasana ikut bahagia.</p>
+                    </div>
+                    <div class="reason-card">
+                        <i class="fa-solid fa-star"></i>
+                        <strong>Menjadi Dirimu</strong>
+                        <p style="font-size: 0.8rem; margin: 5px 0 0;">Tanpa perlu berusaha, kamu sudah sangat memikat.</p>
+                    </div>
+                </div>
+                <button class="btn" onclick="nextSlide()">Lihat Kenangan Kita 📸</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: Photo Gallery -->
+        <div class="slide" id="slide-5">
+            <div class="card">
+                <h2>Momen-Momen Manis</h2>
+                <p style="margin-bottom: 10px;">Potret keindahan yang selalu ingin kukenang ✨</p>
+                <div class="gallery-container">
+                    <img src="https://images.unsplash.com/photo-1518895949257-7621c3c786d7?q=80&w=600&auto=format&fit=crop" class="gallery-img" alt="Memory 1">
+                    <img src="https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?q=80&w=600&auto=format&fit=crop" class="gallery-img" alt="Memory 2">
+                    <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=600&auto=format&fit=crop" class="gallery-img" alt="Memory 3">
+                    <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=600&auto=format&fit=crop" class="gallery-img" alt="Memory 4">
+                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=600&auto=format&fit=crop" class="gallery-img" alt="Memory 5">
+                    <img src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=600&auto=format&fit=crop" class="gallery-img" alt="Memory 6">
+                </div>
+                <button class="btn" onclick="nextSlide()">Doa & Harapan 🤲</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: Prayers & Wishes -->
+        <div class="slide" id="slide-6">
+            <div class="card">
+                <h2>Doa Tulus Untukmu</h2>
+                <p>Di usiamu yang baru ini, aku berdoa agar langkahmu selalu dipenuhi petualangan indah, kesehatan yang tak pernah putus, dan kebahagiaan yang melimpah.</p>
+                <p>Semoga semua impian besar yang sering kamu ceritakan perlahan menjadi kenyataan satu per satu. Amin 🙏</p>
+                
+                <div class="candle-container" onclick="blowCandle()">
+                    <div class="flame" id="flame"></div>
+                    <p style="font-size: 0.85rem; color: var(--accent);">(Klik lilin ini untuk menyala/tiup & buat harapan)</p>
+                </div>
+
+                <button class="btn" onclick="nextSlide()">Ada Pertanyaan Lucu 🤭</button>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: Mini Interactive Quiz -->
+        <div class="slide" id="slide-7">
+            <div class="card">
+                <h2>Pertanyaan Jujur!</h2>
+                <p class="script-font" style="font-size: 2rem;">Seberapa sayang kamu sama aku hari ini?</p>
+                <p>Cobalah untuk menekan tombol di bawah ini ya! 😜</p>
+                
+                <div class="quiz-buttons">
+                    <button class="btn" onclick="answerYes()">Banyak Banget! ❤️</button>
+                    <button class="btn" id="btn-no" style="background: rgba(255,255,255,0.2);">Biasa Aja 😜</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: Grand Closing -->
+        <div class="slide" id="slide-8">
+            <div class="card" style="border-color: var(--primary);">
+                <div style="font-size: 3.5rem; color: var(--primary); margin-bottom: 10px;">✨ 👑 ✨</div>
+                <h1>Happy Birthday Once Again!</h1>
+                <p class="script-font" style="font-size: 2.2rem;">Terima kasih sudah lahir ke dunia ini.</p>
+                <p>Semoga hari ultahmu ini seindah senyumanmu. Tetaplah jadi sosok yang hangat, ceria, dan luar biasa seperti yang kukenal.</p>
+                <button class="btn" onclick="triggerFireworks()"><i class="fa-solid fa-sparkles"></i> Rayakan Dengan Kembang Api! 🎉</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Control Bar -->
+    <div class="nav-controls">
+        <button class="nav-btn" onclick="prevSlide()"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="dots-container" id="dots-container"></div>
+        <button class="nav-btn" onclick="nextSlide()"><i class="fa-solid fa-chevron-right"></i></button>
+    </div>
+
+        <!-- JavaScript logic -->
+    <script>
+        // --- State Management ---
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const dotsContainer = document.getElementById('dots-container');
+        
+        // --- Audio Control ---
+        const music = document.getElementById('bg-music');
+        const musicToggle = document.getElementById('music-toggle');
+        const musicIcon = document.getElementById('music-icon');
+        const musicText = document.getElementById('music-text');
+        let isPlaying = false;
+
+        function toggleMusic() {
+            if (isPlaying) {
+                music.pause();
+                musicIcon.className = "fa-solid fa-music";
+                musicText.innerText = "Putar Musik 🎵";
+            } else {
+                music.play().then(() => {
+                    musicIcon.className = "fa-solid fa-pause";
+                    musicText.innerText = "Jeda Musik ⏸️";
+                }).catch(e => console.log("Audio play blocked by browser policy"));
+            }
+            isPlaying = !isPlaying;
+        }
+
+        musicToggle.addEventListener('click', toggleMusic);
+
+        // Auto-play music on first interaction anywhere
+        document.body.addEventListener('click', function initAudio() {
+            if(!isPlaying) {
+                toggleMusic();
+            }
+            document.body.removeEventListener('click', initAudio);
+        }, { once: true });
+
+        // --- Render Navigation Dots ---
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('div');
+            dot.classList.add('dot');
+            if (i === 0) dot.classList.add('active');
+            dot.addEventListener('click', () => goToSlide(i));
+            dotsContainer.appendChild(dot);
+        }
+
+        const dots = document.querySelectorAll('.dot');
+
+        function updateDots() {
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle('active', idx === currentSlide);
+            });
+        }
+
+        function goToSlide(index) {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (index + totalSlides) % totalSlides;
+            slides[currentSlide].classList.add('active');
+            updateDots();
+
+            // Trigger fireworks automatically if on last slide
+            if (currentSlide === totalSlides - 1) {
+                startFireworks();
+            }
+        }
+
+        function nextSlide() {
+            goToSlide(currentSlide + 1);
+        }
+
+        function prevSlide() {
+            goToSlide(currentSlide - 1);
+        }
+
+        // Keyboard & Touch Swiping support
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', e => {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', e => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (touchEndX < touchStartX - 50) nextSlide();
+            if (touchEndX > touchStartX + 50) prevSlide();
+        }
+
+        // --- Interactive Slide Features ---
+        // Slide 6: Candle Flame Toggle
+        function blowCandle() {
+            const flame = document.getElementById('flame');
+            flame.classList.toggle('off');
+        }
+
+        // Slide 7: Playful Button Move ("Tombol Kabur")
+        const btnNo = document.getElementById('btn-no');
+        if(btnNo) {
+            btnNo.addEventListener('mouseover', moveButton);
+            btnNo.addEventListener('touchstart', moveButton);
+        }
+
+        function moveButton() {
+            const x = Math.random() * (window.innerWidth - 150) - (window.innerWidth / 2 - 75);
+            const y = Math.random() * (window.innerHeight - 150) - (window.innerHeight / 2 - 75);
+            btnNo.style.transform = `translate(${x}px, ${y}px)`;
+        }
+
+        function answerYes() {
+            alert("Aww, aku juga sayang banget sama kamu! ❤️✨");
+            nextSlide();
+        }
+
+        // --- Canvas 1: Floating Hearts Background ---
+        const bgCanvas = document.getElementById('bg-canvas');
+        const bgCtx = bgCanvas.getContext('2d');
+        let hearts = [];
+
+        function resizeBgCanvas() {
+            bgCanvas.width = window.innerWidth;
+            bgCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeBgCanvas);
+        resizeBgCanvas();
+
+        class Heart {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * bgCanvas.width;
+                this.y = bgCanvas.height + Math.random() * 100;
+                this.size = Math.random() * 15 + 8;
+                this.speed = Math.random() * 1.5 + 0.5;
+                this.opacity = Math.random() * 0.5 + 0.2;
+                this.swing = Math.random() * 0.05;
+                this.swingAngle = Math.random() * Math.PI * 2;
+            }
+            update() {
+                this.y -= this.speed;
+                this.swingAngle += this.swing;
+                this.x += Math.sin(this.swingAngle) * 0.5;
+                if (this.y < -20) this.reset();
+            }
+            draw() {
+                bgCtx.save();
+                bgCtx.globalAlpha = this.opacity;
+                bgCtx.fillStyle = '#ff758c';
+                bgCtx.beginPath();
+                const topCurveHeight = this.size * 0.3;
+                bgCtx.moveTo(this.x, this.y + topCurveHeight);
+                bgCtx.bezierCurveTo(this.x, this.y, this.x - this.size / 2, this.y, this.x - this.size / 2, this.y + topCurveHeight);
+                bgCtx.bezierCurveTo(this.x - this.size / 2, this.y + (this.size + topCurveHeight) / 2, this.x, this.y + this.size, this.x, this.y + this.size);
+                bgCtx.bezierCurveTo(this.x, this.y + this.size, this.x + this.size / 2, this.y + (this.size + topCurveHeight) / 2, this.x + this.size / 2, this.y + topCurveHeight);
+                bgCtx.bezierCurveTo(this.x + this.size / 2, this.y, this.x, this.y, this.x, this.y + topCurveHeight);
+                bgCtx.closePath();
+                bgCtx.fill();
+                bgCtx.restore();
+            }
+        }
+
+        for (let i = 0; i < 25; i++) {
+            hearts.push(new Heart());
+        }
+
+        function animateBg() {
+            bgCtx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
+            hearts.forEach(h => {
+                h.update();
+                h.draw();
+            });
+            requestAnimationFrame(animateBg);
+        }
+        animateBg();
+
+        // --- Canvas 2: Grand Closing Fireworks ---
+        const fwCanvas = document.getElementById('fireworks-canvas');
+        const fwCtx = fwCanvas.getContext('2d');
+        let particles = [];
+
+        function resizeFwCanvas() {
+            fwCanvas.width = window.innerWidth;
+            fwCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeFwCanvas);
+        resizeFwCanvas();
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.radius = Math.random() * 3 + 2;
+                this.velocity = {
+                    x: (Math.random() - 0.5) * 8,
+                    y: (Math.random() - 0.5) * 8
+                };
+                this.alpha = 1;
+                this.friction = 0.98;
+                this.gravity = 0.05;
+            }
+            draw() {
+                fwCtx.save();
+                fwCtx.globalAlpha = this.alpha;
+                fwCtx.beginPath();
+                fwCtx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                fwCtx.fillStyle = this.color;
+                fwCtx.fill();
+                fwCtx.restore();
+            }
+            update() {
+                this.velocity.x *= this.friction;
+                this.velocity.y *= this.friction;
+                this.velocity.y += this.gravity;
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= 0.012;
+            }
+        }
+
+        function createFirework(x, y) {
+            const colors = ['#ff758c', '#ff7eb3', '#ffd1dc', '#ffffff', '#ffbe0b', '#ff007f'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            for (let i = 0; i < 40; i++) {
+                particles.push(new Particle(x, y, color));
+            }
+        }
+
+        let fwAnimationId = null;
+        function animateFireworks() {
+            fwCtx.fillStyle = 'rgba(15, 5, 29, 0.2)';
+            fwCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
+
+            particles.forEach((p, index) => {
+                if (p.alpha > 0) {
+                    p.update();
+                    p.draw();
+                } else {
+                    particles.splice(index, 1);
+                }
+            });
+
+            if (particles.length > 0) {
+                fwAnimationId = requestAnimationFrame(animateFireworks);
+            } else {
+                fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+            }
+        }
+
+        function startFireworks() {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const x = Math.random() * fwCanvas.width * 0.8 + fwCanvas.width * 0.1;
+                    const y = Math.random() * fwCanvas.height * 0.5 + fwCanvas.height * 0.1;
+                    createFirework(x, y);
+                    if (particles.length <= 40) animateFireworks();
+                }, i * 300);
+            }
+        }
+
+        function triggerFireworks() {
+            startFireworks();
+        }
+    </script>
+</body>
+</html>
