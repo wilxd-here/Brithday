@@ -3,186 +3,673 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>XAERISOFT | WhatsApp Appeal Generator</title>
-    <!-- Google Fonts -->
+    <title>[Judul Tab Browser Anda]</title>
+    
+    <!-- Mengambil font dari Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* === RESET & VARIABEL === */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --pink-soft: #ffb6c1;
+            --purple-soft: #e6e6fa;
+            --gold-light: #fffacd;
+            --text-dark: #4a4a4a;
+            --text-light: #fff;
+            --glass-bg: rgba(255, 255, 255, 0.4);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --shadow-soft: 0 8px 32px 0 rgba(255, 182, 193, 0.3);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            /* Latar belakang gradasi yang bergerak */
+            background: linear-gradient(-45deg, #ffe5ec, #f3e8ff, #fffbeb, #ffc0cb);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            overflow: hidden; 
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        h1, h2, h3, .judul-cantik {
+            font-family: 'Dancing Script', cursive;
+            color: #d81b60;
+            text-shadow: 2px 2px 4px rgba(216, 27, 96, 0.2);
+        }
+
+        /* === ANIMASI === */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(255, 182, 193, 0.5); }
+            50% { box-shadow: 0 0 35px rgba(255, 182, 193, 0.9); transform: scale(1.05); }
+            100% { box-shadow: 0 0 10px rgba(255, 182, 193, 0.5); }
+        }
+
+        /* === ANIMASI TRANSISI SLIDE MASUK & KELUAR === */
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes slideOutDown {
+            from {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
+        }
+
+        /* === PARTIKEL (Bintang, Hati, Kelopak) === */
+        #particles-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0;
+        }
+
+        .particle {
+            position: absolute; bottom: -20px;
+            pointer-events: none; animation: flyUp linear infinite;
+        }
+
+        @keyframes flyUp {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        }
+
+        /* === KONTROL MUSIK === */
+        .music-btn {
+            position: fixed; bottom: 20px; left: 20px;
+            background: var(--glass-bg); backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border); padding: 10px 15px;
+            border-radius: 30px; cursor: pointer; z-index: 100;
+            box-shadow: var(--shadow-soft); font-family: inherit;
+            color: #d81b60; font-weight: 600; display: none; 
+            align-items: center; gap: 8px; transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+        .music-btn:hover { transform: scale(1.05); background: rgba(255, 255, 255, 0.7); }
+
+        /* === STRUKTUR SLIDES === */
+        .slide-container {
+            position: relative; width: 100%; height: 100%; z-index: 10;
+        }
+
+        .slide {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; display: none;
+            flex-direction: column; justify-content: center; align-items: center;
+            text-align: center; padding: 20px; opacity: 0;
+            overflow-y: auto;
+        }
+
+        /* Kelas aktif untuk Memicu Animasi Masuk */
+        .slide.active { 
+            display: flex; 
+            animation: slideInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        /* Kelas untuk Memicu Animasi Keluar */
+        .slide.exit {
+            display: flex;
+            animation: slideOutDown 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .glass-box {
+            background: var(--glass-bg); backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); border: 1px solid var(--glass-border);
+            border-radius: 24px; padding: 40px; box-shadow: var(--shadow-soft);
+            max-width: 800px; width: 95%;
+        }
+
+        /* === SISTEM PIN PASSWORD (TAMBAHAN) === */
+        #pin-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 229, 236, 0.85); backdrop-filter: blur(15px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.5s ease;
+        }
+        .pin-box {
+            background: var(--glass-bg); backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border); border-radius: 24px;
+            padding: 40px; box-shadow: var(--shadow-soft);
+            max-width: 400px; width: 90%; text-align: center;
+        }
+        .pin-input {
+            width: 100%; padding: 12px 20px; margin: 20px 0 10px 0;
+            border-radius: 30px; border: 1px solid rgba(216, 27, 96, 0.3);
+            background: rgba(255, 255, 255, 0.7); font-size: 1.1rem;
+            text-align: center; font-family: 'Poppins', sans-serif;
+            color: #d81b60; outline: none; transition: all 0.3s;
+        }
+        .pin-input:focus {
+            border-color: #d81b60; box-shadow: 0 0 10px rgba(216, 27, 96, 0.2);
+        }
+        .pin-btn {
+            background: linear-gradient(45deg, #ff8a80, #ff4081);
+            color: white; border: none; padding: 12px 30px;
+            font-size: 1.1rem; font-family: inherit; border-radius: 30px;
+            cursor: pointer; box-shadow: 0 4px 15px rgba(255, 64, 129, 0.3);
+            transition: all 0.3s ease; width: 100%; font-weight: 600;
+        }
+        .pin-btn:hover { transform: scale(1.03); box-shadow: 0 6px 20px rgba(255, 64, 129, 0.5); }
+        .pin-error {
+            color: #d32f2f; font-size: 0.9rem; margin-top: 10px;
+            min-height: 20px; font-weight: 500;
+        }
+
+        /* === KLIKBAIT HATI === */
+        .heart-clickbait {
+            font-size: 5rem; cursor: pointer;
+            animation: pulseGlow 2s infinite, float 3s infinite;
+            background: rgba(255, 255, 255, 0.6); border-radius: 50%;
+            width: 120px; height: 120px; display: flex;
+            align-items: center; justify-content: center;
+            margin: 20px auto; transition: all 0.3s; user-select: none;
+        }
+        .heart-clickbait:hover { transform: scale(1.1); background: rgba(255, 255, 255, 0.9); }
+
+        /* === TOMBOL NAVIGASI SLIDE (EKSKLUSIF) === */
+        .next-btn {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid rgba(255, 182, 193, 0.8);
+            color: #d81b60;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-size: 1.1rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 35px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(216, 27, 96, 0.1);
+            transition: all 0.3s ease;
+            animation: float 2.5s ease-in-out infinite;
+            text-decoration: none;
+            user-select: none;
+        }
+        .next-btn:hover {
+            background: linear-gradient(45deg, #ff8a80, #ff4081);
+            color: #fff;
+            border-color: transparent;
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(216, 27, 96, 0.4);
+            animation: none; 
+        }
+
+        /* === PENGHITUNG WAKTU === */
+        .counter-grid {
+            display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;
+        }
+        .time-box {
+            background: rgba(255, 255, 255, 0.6); padding: 15px;
+            border-radius: 15px; min-width: 90px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .time-box span { display: block; font-size: 1.8rem; font-weight: 600; color: #d81b60; }
+        .time-box small { font-size: 0.9rem; color: #666; }
+
+        /* === FOTO MOMEN (Galeri) === */
+        .gallery-grid {
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-top: 45px;
+        }
+        @media (max-width: 600px) { .gallery-grid { grid-template-columns: 1fr; } }
+        .photo-card {
+            background: #fff; padding: 15px; border-radius: 16px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.05); transition: all 0.4s ease;
+        }
+        .photo-card img { width: 100%; height: 180px; object-fit: cover; border-radius: 12px; }
+
+        /* === 10 ALASAN === */
+        #reason-text {
+            font-size: 1.3rem; font-style: italic; min-height: 80px;
+            display: flex; align-items: center; justify-content: center;
+            color: #c2185b; transition: opacity 0.5s; font-weight: 500;
+        }
+
+        /* === KATA-KATA UCAPAN (Typewriter) === */
+        .typewriter-container {
+            font-size: 1.1rem; line-height: 1.8; text-align: left; min-height: 150px;
+        }
+        .cursor {
+            display: inline-block; width: 3px; height: 1em;
+            background-color: #d81b60; animation: blink 0.7s infinite; vertical-align: middle;
+        }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+        /* === TOMBOL PESAN RAHASIA === */
+        .btn-special {
+            background: linear-gradient(45deg, #ff8a80, #ff4081);
+            color: white; border: none; padding: 15px 35px;
+            font-size: 1.2rem; font-family: inherit; border-radius: 50px;
+            cursor: pointer; box-shadow: 0 10px 20px rgba(255, 64, 129, 0.3);
+            animation: pulseGlow 2s infinite; transition: all 0.3s ease;
+        }
+        .btn-special:hover { transform: scale(1.08); box-shadow: 0 15px 30px rgba(255, 64, 129, 0.5); }
+
+        /* === MODAL PESAN RAHASIA === */
+        .modal {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+        }
+        .modal.active { opacity: 1; pointer-events: auto; }
+        .modal-content {
+            background: #fff; padding: 40px; border-radius: 20px;
+            max-width: 500px; width: 90%; text-align: center;
+            transform: scale(0.8) rotate(-5deg); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2); position: relative;
+        }
+        .modal.active .modal-content { transform: scale(1) rotate(0deg); }
+        .close-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: #f1f1f1; border: none; border-radius: 50%;
+            width: 35px; height: 35px; cursor: pointer;
+            font-size: 1.2rem; color: #555; transition: background 0.3s;
+        }
+        .close-btn:hover { background: #ffebee; color: #d32f2f; }
+        .explosion-heart, .rain-petal { position: fixed; pointer-events: none; z-index: 9999; }
+        
+        /* === KUSTOMISASI JUDUL & EFEK MENELAP MOMEN 1 === */
+        .judul-momen {
+            margin-top: 15px;
+            margin-bottom: 5px; 
+            font-weight: 700;
+            color: #d81b60;
+            font-size: 1.1rem;
+            font-family: 'Poppins', sans-serif;
+            letter-spacing: 0.5px;
+        }
+
+        .momen-overlap {
+            transform: translateY(-20px); 
+            position: relative;
+            z-index: 5;
+            box-shadow: 0 15px 30px rgba(216, 27, 96, 0.2); 
+        }
+
+        @media (max-width: 600px) {
+            .gallery-grid {
+                margin-top: 55px !important; 
+            }
+            .momen-overlap {
+                transform: translateY(-30px);
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Background Ambient Glowing Orbs -->
-    <div class="ambient-glow orb-1"></div>
-    <div class="ambient-glow orb-2"></div>
-    <div class="ambient-glow orb-3"></div>
 
-    <div class="app-container">
-        <!-- Header Section -->
-        <header class="header">
-            <div class="brand-badge">
-                <span class="badge-dot"></span>
-                <span>XAERISOFT CORE</span>
-            </div>
-            <h1 class="title">WhatsApp Appeal <span class="gradient-text">Generator</span></h1>
-            <p class="subtitle">Buat surat banding profesional, formal, dan terstruktur untuk pemulihan akun WhatsApp Anda.</p>
-        </header>
+    <div id="particles-container"></div>
 
-        <!-- Disclaimer Banner -->
-        <aside class="disclaimer-card" aria-label="Disclaimer">
-            <div class="disclaimer-icon">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-            </div>
-            <div class="disclaimer-text">
-                <strong>Penting:</strong> Website ini hanya membantu menyusun draft surat banding profesional. Xaerisoft <u>tidak menjamin</u> akun WhatsApp Anda pasti akan dipulihkan kembali oleh pihak Meta/WhatsApp.
-            </div>
-        </aside>
-
-        <!-- Main Content Layout -->
-        <main class="main-grid">
-            <!-- Form Input Card -->
-            <section class="glass-card form-card">
-                <div class="card-header">
-                    <h2>Input Data Banding</h2>
-                    <p>Lengkapi formulir di bawah untuk memproses template surat.</p>
-                </div>
-
-                <form id="appealForm" novalidate>
-                    <!-- Full Name -->
-                    <div class="input-group">
-                        <label for="fullName">Nama Lengkap <span class="required">*</span></label>
-                        <div class="input-wrapper">
-                            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                            <input type="text" id="fullName" placeholder="Contoh: Budi Pratama" required>
-                        </div>
-                    </div>
-
-                    <!-- WhatsApp Number -->
-                    <div class="input-group">
-                        <label for="waNumber">Nomor WhatsApp <span class="required">*</span></label>
-                        <div class="input-wrapper">
-                            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                            <input type="tel" id="waNumber" placeholder="Contoh: +6281234567890" required>
-                        </div>
-                    </div>
-
-                    <!-- Email (Optional) -->
-                    <div class="input-group">
-                        <label for="email">Email Terkait <span class="optional">(Opsional)</span></label>
-                        <div class="input-wrapper">
-                            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                            <input type="email" id="email" placeholder="Contoh: email@domain.com">
-                        </div>
-                    </div>
-
-                    <!-- Language Option -->
-                    <div class="input-group">
-                        <label for="language">Bahasa Surat <span class="required">*</span></label>
-                        <div class="input-wrapper">
-                            <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                            <select id="language" required>
-                                <option value="id" selected>Bahasa Indonesia</option>
-                                <option value="en">English (Recommended)</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Appeal Type Option -->
-                    <div class="input-group">
-                        <label>Jenis Banding <span class="required">*</span></label>
-                        <div class="radio-grid">
-                            <label class="radio-card active">
-                                <input type="radio" name="appealType" value="spam" checked>
-                                <div class="radio-content">
-                                    <span class="radio-title">Spam / Temporary Restricted</span>
-                                    <span class="radio-desc">Untuk akun yang dibatasi sementara atau terindikasi spam.</span>
-                                </div>
-                            </label>
-                            <label class="radio-card">
-                                <input type="radio" name="appealType" value="permanent">
-                                <div class="radio-content">
-                                    <span class="radio-title">Permanently Banned</span>
-                                    <span class="radio-desc">Untuk akun yang terkena pemblokiran secara permanen.</span>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn-primary" id="generateBtn">
-                        <span>Generate Surat Banding</span>
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
-                    </button>
-                </form>
-            </section>
-
-            <!-- Result Display Card -->
-            <section class="glass-card result-card">
-                <div class="card-header">
-                    <h2>Hasil Surat Banding</h2>
-                    <p>Salin subjek dan isi surat di bawah atau kirim langsung ke Tim Support WhatsApp.</p>
-                </div>
-
-                <!-- Empty State -->
-                <div id="emptyState" class="empty-state">
-                    <div class="empty-icon">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                    </div>
-                    <h3>Belum Ada Data</h3>
-                    <p>Isi formulir di sebelah kiri dan klik tombol generate untuk membuat surat banding Anda.</p>
-                </div>
-
-                <!-- Result Content Container -->
-                <div id="resultContainer" class="result-container hidden">
-                    <!-- Subject Section -->
-                    <div class="output-box">
-                        <div class="output-header">
-                            <span class="output-label">Subjek Email</span>
-                            <button type="button" class="btn-copy" id="copySubjectBtn" title="Salin Subjek">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                                <span>Copy Subject</span>
-                            </button>
-                        </div>
-                        <div class="output-content subject-text" id="subjectOutput"></div>
-                    </div>
-
-                    <!-- Body Section -->
-                    <div class="output-box">
-                        <div class="output-header">
-                            <span class="output-label">Isi Surat (Body)</span>
-                            <button type="button" class="btn-copy" id="copyBodyBtn" title="Salin Body Surat">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                                <span>Copy Body</span>
-                            </button>
-                        </div>
-                        <div class="output-content body-text" id="bodyOutput"></div>
-                    </div>
-
-                    <!-- Direct Send Action Buttons -->
-                    <div class="action-footer">
-                        <a id="gmailBtn" href="#" target="_blank" class="btn-primary-gmail">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L12 9.545l8.073-6.052c1.618-1.214 3.927-.059 3.927 1.964z"/></svg>
-                            <span>Buka di Gmail Web</span>
-                        </a>
-                        <a id="mailtoBtn" href="#" target="_blank" class="btn-secondary">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-                            <span>Aplikasi Email Default</span>
-                        </a>
-                    </div>
-                </div>
-            </section>
-        </main>
-
-        <!-- Footer -->
-        <footer class="footer">
-            <p>&copy; 2026 <strong>XAERISOFT</strong>. All rights reserved. Professional Utility Tools.</p>
-        </footer>
+    <!-- KOTAK INPUT PIN PASSWORD -->
+    <div id="pin-overlay">
+        <div class="pin-box">
+            <h2 class="judul-cantik" style="font-size: 2.5rem; margin-bottom: 10px;">Masukkan PIN</h2>
+            <p style="font-size: 0.95rem; color: #666; margin-bottom: 10px;">Silakan ketik PIN rahasia untuk membuka halaman ini ✨</p>
+            <input type="password" id="pinInput" class="pin-input" placeholder="Ketik PIN di sini..." autofocus>
+            <button class="pin-btn" onclick="checkPin()">Buka 🤍</button>
+            <div id="pinError" class="pin-error"></div>
+        </div>
     </div>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="toast hidden">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        <span id="toastMsg">Teks berhasil disalin!</span>
+    <!-- MUSIK -->
+    <audio id="bgMusic" loop>
+        <source src="lagu.mp3" type="audio/mpeg">
+    </audio>
+    <button class="music-btn" onclick="toggleMusic()" id="musicToggleBtn">⏸️ Jeda Musik</button>
+
+    <div class="slide-container">
+        
+        <!-- INTRO (HATI) -->
+        <div class="slide" id="slide-0">
+            <h2 class="judul-cantik" style="font-size: 2.5rem; margin-bottom: 10px;">[Judul Pembuka Bebas]</h2>
+            <div class="heart-clickbait" onclick="startExperience()">🤍</div>
+            <p style="font-size: 1.1rem; opacity: 0.8;">[Teks Instruksi Klik, cth: Sentuh hatinya]</p>
+        </div>
+        
+        <!-- SLIDE 1 -->
+        <div class="slide" id="slide-1">
+            <div class="glass-box">
+                <h1 class="judul-cantik" style="font-size: 3.5rem; margin-bottom: 20px;">[Judul Utama Slide 1]</h1>
+                <p style="font-size: 1.2rem; line-height: 1.6;">[Isi Teks Pembuka Slide 1, ceritakan sedikit tujuan halaman ini]</p>
+                <div class="next-btn" onclick="nextSlide(2)">Lanjut ✨</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: WAKTU -->
+        <div class="slide" id="slide-2">
+            <div class="glass-box">
+                <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 10px;">[Judul Slide 2 (Penghitung Waktu)]</h2>
+                <p style="font-size: 1.1rem;">[Teks Pengantar Waktu]</p>
+                <div class="counter-grid">
+                    <div class="time-box"><span id="c-days">0</span><small>Hari</small></div>
+                    <div class="time-box"><span id="c-hours">0</span><small>Jam</small></div>
+                    <div class="time-box"><span id="c-mins">0</span><small>Menit</small></div>
+                    <div class="time-box"><span id="c-secs">0</span><small>Detik</small></div>
+                </div>
+                <div class="next-btn" onclick="nextSlide(3)">Lanjut ✨</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: ALASAN -->
+        <div class="slide" id="slide-3">
+            <div class="glass-box">
+                <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 15px;">[Judul Slide 3 (Alasan)]</h2>
+                <p style="margin-bottom: 20px;">[Teks Pengantar Alasan]</p>
+                <div id="reason-text">"[Alasan Pertama Muncul di Sini]"</div>
+                <div class="next-btn" onclick="nextSlide(4)">Lanjut ✨</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: GALERI -->
+        <div class="slide" id="slide-4">
+            <div class="glass-box">
+                <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 10px;">Kenangan Indah Kita 📸</h2>
+                <p style="margin-bottom: 20px;">Momen-momen yang akan selalu kusimpan rapi di hati.</p>
+                
+                <div class="gallery-grid">
+                    <div class="photo-card momen-overlap">
+                        <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=500&q=80" alt="Momen 1">
+                        <h3 class="judul-momen">[Teks Judul Momen 1]</h3>
+                        <p style="margin-top:4px; font-size:0.85rem; color:#666;">[Isi cerita singkat tentang momen ini...]</p>
+                    </div>
+                    
+                    <div class="photo-card">
+                        <img src="https://images.unsplash.com/photo-1518621736915-f3b1c41bfd00?auto=format&fit=crop&w=500&q=80" alt="Momen 2">
+                        <h3 class="judul-momen">[Teks Judul Momen 2]</h3>
+                        <p style="margin-top:4px; font-size:0.85rem; color:#666;">[Isi cerita singkat tentang momen ini...]</p>
+                    </div>
+                    
+                    <div class="photo-card">
+                        <img src="https://images.unsplash.com/photo-1474552226712-ac0f0961a954?auto=format&fit=crop&w=500&q=80" alt="Momen 3">
+                        <h3 class="judul-momen">[Teks Judul Momen 3]</h3>
+                        <p style="margin-top:4px; font-size:0.85rem; color:#666;">[Isi cerita singkat tentang momen ini...]</p>
+                    </div>
+                    
+                    <div class="photo-card">
+                        <img src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=500&q=80" alt="Momen 4">
+                        <h3 class="judul-momen">[Teks Judul Momen 4]</h3>
+                        <p style="margin-top:4px; font-size:0.85rem; color:#666;">[Isi cerita singkat tentang momen ini...]</p>
+                    </div>
+                </div>
+                <div class="next-btn" onclick="nextSlide(5)">Lanjut ✨</div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: TYPEWRITER -->
+        <div class="slide" id="slide-5">
+            <div class="glass-box">
+                <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 20px;">[Judul Slide 5 (Pesan Ketik)]</h2>
+                <div class="typewriter-container">
+                    <span id="type-text"></span><span class="cursor"></span>
+                </div>
+                <div class="next-btn" onclick="nextSlide(6)">Lanjut ✨</div>
+            </div>
+        </div>
+
+            <!-- SLIDE 6: PENUTUP -->
+        <div class="slide" id="slide-6">
+            <div class="glass-box" style="background: rgba(255,192,203,0.3); border: 2px dashed #ff8a80;">
+                <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 20px;">[Judul Slide 6 (Satu Hal Lagi)]</h2>
+                <p style="margin-bottom: 30px; font-size: 1.1rem;">[Teks Pengantar Tombol Pesan Spesial]</p>
+                <button class="btn-special" onclick="openModal(event)">[Teks Tombol Pesan Spesial]</button>
+                
+                <div style="margin-top: 40px; font-style: italic; color: #666; min-height: 50px;">
+                    <p id="footer-quote">"[Quote Berjalan Pertama]"</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <script src="script.js"></script>
+    <!-- MODAL (POPUP PESAN RAHASIA) -->
+    <div class="modal" id="secretModal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal()">✖</button>
+            <h2 class="judul-cantik" style="font-size: 2.5rem; margin-bottom: 15px;">[Judul di Dalam Popup]</h2>
+            <img src="https://media.giphy.com/media/xT0xezQGU5xCDJuCPe/giphy.gif" alt="Cute GIF" style="width:150px; border-radius:15px; margin-bottom:15px;">
+            <p style="font-size: 1.1rem; line-height: 1.6; color: #444;">
+                [Isi Paragraf Pertama Pesan Rahasia]<br><br>
+                <strong>[Isi Pesan Penutup yang di-Bold / Ditebalkan]</strong>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        /* === 0. LOGIKA CEK PIN PASSWORD === */
+        const correctPin = "mewi"; // PIN yang diminta
+
+        function checkPin() {
+            const inputVal = document.getElementById('pinInput').value.trim();
+            const errorEl = document.getElementById('pinError');
+            const overlay = document.getElementById('pin-overlay');
+
+            if (inputVal === correctPin) {
+                errorEl.innerText = "";
+                overlay.style.opacity = '0';
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    // Aktifkan slide intro love setelah PIN benar
+                    const slide0 = document.getElementById('slide-0');
+                    slide0.style.display = 'flex';
+                    slide0.classList.add('active');
+                }, 500);
+            } else {
+                errorEl.innerText = "PIN salah, coba lagi ya! 🥺";
+                document.getElementById('pinInput').value = "";
+                document.getElementById('pinInput').focus();
+            }
+        }
+
+        // Memungkinkan tekan tombol 'Enter' untuk submit PIN
+        document.getElementById('pinInput').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                checkPin();
+            }
+        });
+
+        /* === 1. SISTEM SLIDE & MUSIK === */
+        const bgMusic = document.getElementById('bgMusic');
+        const musicBtn = document.getElementById('musicToggleBtn');
+        let isPlaying = false;
+
+        function startExperience() {
+            bgMusic.play();
+            isPlaying = true;
+            musicBtn.style.display = 'flex';
+            nextSlide(1);
+        }
+
+        function toggleMusic() {
+            if (isPlaying) { bgMusic.pause(); musicBtn.innerHTML = '🎵 Putar Musik'; }
+            else { bgMusic.play(); musicBtn.innerHTML = '⏸️ Jeda Musik'; }
+            isPlaying = !isPlaying;
+        }
+
+        function nextSlide(index) {
+            const currentActive = document.querySelector('.slide.active');
+            const targetSlide = document.getElementById('slide-' + index);
+
+            if (currentActive) {
+                currentActive.classList.remove('active');
+                currentActive.classList.add('exit');
+
+                setTimeout(() => {
+                    currentActive.classList.remove('exit');
+                    currentActive.style.display = 'none';
+                }, 500); 
+            }
+
+            setTimeout(() => {
+                targetSlide.style.display = 'flex';
+                targetSlide.classList.add('active');
+            }, 200);
+
+            if (index === 5 && !typeStarted) {
+                typeStarted = true;
+                setTimeout(typeWriter, 800); 
+            }
+        }
+
+        /* === 2. PARTIKEL BACKGROUND === */
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            const items = ['💖', '✨', '🌸', '🤍', '⭐'];
+            setInterval(() => {
+                const el = document.createElement('div');
+                el.classList.add('particle');
+                el.innerText = items[Math.floor(Math.random() * items.length)];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.fontSize = (Math.random() * 15 + 10) + 'px';
+                el.style.animationDuration = (Math.random() * 10 + 5) + 's';
+                container.appendChild(el);
+                setTimeout(() => el.remove(), 15000);
+            }, 500);
+        }
+        createParticles();
+
+        /* === 3. PENGHITUNG WAKTU BERSAMA === */
+        const startDate = new Date(2023, 0, 15, 0, 0, 0).getTime();
+
+        function updateCounter() {
+            const now = new Date().getTime();
+            const distance = now - startDate;
+            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+            document.getElementById('c-days').innerText = days;
+            document.getElementById('c-hours').innerText = hours;
+            document.getElementById('c-mins').innerText = minutes;
+            document.getElementById('c-secs').innerText = seconds;
+        }
+        setInterval(updateCounter, 1000);
+
+        /* === 4. EFEK KETIK (Typewriter) === */
+        const messageText = "[Isi Teks Panjang untuk Efek Mengetik Otomatis. Anda bisa menuliskannya sepanjang yang Anda inginkan di dalam tanda kutip ini.]";
+        
+        const typeEl = document.getElementById('type-text');
+        let i = 0; let typeStarted = false;
+
+        function typeWriter() {
+            if (i < messageText.length) {
+                typeEl.innerHTML += messageText.charAt(i);
+                i++;
+                setTimeout(typeWriter, 40); 
+            }
+        }
+
+        /* === 5. ROTASI ALASAN === */
+        const reasons = [
+            "[Alasan Pertama Kenapa Bersyukur...]",
+            "[Alasan Kedua...]",
+            "[Alasan Ketiga...]",
+            "[Alasan Keempat...]"
+        ];
+        let rIndex = 0; const reasonEl = document.getElementById('reason-text');
+        
+        setInterval(() => {
+            reasonEl.style.opacity = 0;
+            setTimeout(() => {
+                rIndex = (rIndex + 1) % reasons.length;
+                reasonEl.innerText = `"${reasons[rIndex]}"`;
+                reasonEl.style.opacity = 1;
+            }, 500);
+        }, 4000); 
+
+        /* === 6. ROTASI QUOTES BAWAH === */
+        const quotes = [
+            "[Quote / Kutipan Pertama...]",
+            "[Quote / Kutipan Kedua...]",
+            "[Quote / Kutipan Ketiga...]"
+        ];
+        let qIndex = 0; const quoteEl = document.getElementById('footer-quote');
+        
+        setInterval(() => {
+            quoteEl.style.opacity = 0;
+            setTimeout(() => {
+                qIndex = (qIndex + 1) % quotes.length;
+                quoteEl.innerText = `"${quotes[qIndex]}"`;
+                quoteEl.style.opacity = 1;
+            }, 500);
+        }, 5000);
+
+        /* === 7. MODAL & EFEK ANIMASI KLIK === */
+        const modal = document.getElementById('secretModal');
+        function openModal(e) {
+            modal.classList.add('active');
+            createHeartExplosion(e.clientX, e.clientY);
+            createPetalRain();
+        }
+        function closeModal() { modal.classList.remove('active'); }
+
+        function createHeartExplosion(x, y) {
+            for (let i = 0; i < 30; i++) {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️'; heart.classList.add('explosion-heart');
+                document.body.appendChild(heart);
+                heart.style.left = x + 'px'; heart.style.top = y + 'px';
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = 50 + Math.random() * 150;
+                const tx = Math.cos(angle) * velocity; const ty = Math.sin(angle) * velocity - 50;
+                heart.style.transition = 'all 1s cubic-bezier(0.25, 1, 0.5, 1)';
+                requestAnimationFrame(() => {
+                    heart.style.transform = `translate(${tx}px, ${ty}px) scale(${Math.random() * 1.5 + 0.5})`;
+                    heart.style.opacity = '0';
+                });
+                setTimeout(() => heart.remove(), 1000);
+            }
+        }
+        function createPetalRain() {
+            for (let i = 0; i < 50; i++) {
+                setTimeout(() => {
+                    const petal = document.createElement('div');
+                    petal.innerHTML = '🌸'; petal.classList.add('rain-petal');
+                    petal.style.left = Math.random() * 100 + 'vw'; petal.style.top = '-20px';
+                    petal.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                    petal.style.transition = `all ${Math.random() * 3 + 2}s linear`;
+                    document.body.appendChild(petal);
+                    requestAnimationFrame(() => {
+                        petal.style.transform = `translateY(110vh) rotate(${Math.random() * 360}deg)`;
+                    });
+                    setTimeout(() => petal.remove(), 5000);
+                }, i * 100);
+            }
+        }
+    </script>
 </body>
 </html>
