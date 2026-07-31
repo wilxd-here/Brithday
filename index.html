@@ -526,6 +526,54 @@
         opacity: 0;
     }
 }
+              /* === DESAIN TEKS INTRO & BUBBLE (BARU) === */
+        .intro-teks-tebal {
+            font-family: 'Dancing Script', cursive;
+            font-size: 4rem !important; /* Diperbesar ukurannya */
+            font-weight: 900;
+            color: #d81b60; 
+            /* Outline putih tebal biar sangat kontras sama langit */
+            text-shadow: 
+                -2px -2px 0 #fff,  
+                 2px -2px 0 #fff,
+                -2px  2px 0 #fff,
+                 2px  2px 0 #fff,
+                 0px  5px 15px rgba(0,0,0,0.6); 
+            animation: floatGoyang 3s ease-in-out infinite;
+            margin-bottom: 10px;
+            z-index: 10;
+        }
+
+        @keyframes floatGoyang {
+            0% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(-3deg); }
+            50% { transform: translateY(0) rotate(0deg); }
+            75% { transform: translateY(-10px) rotate(3deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+
+        .bubble-teks {
+            background: rgba(255, 255, 255, 0.9); /* Putih transparan (Efek Kaca) */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 182, 193, 0.9); /* Garis pinggir pink soft */
+            padding: 12px 30px;
+            border-radius: 50px; /* Bentuk pil / gelembung melengkung */
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #d81b60;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            animation: bounceLembut 2s infinite;
+            margin-top: 10px;
+            z-index: 10;
+        }
+
+        @keyframes bounceLembut {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
 
     </style>
 </head>
@@ -557,9 +605,13 @@
         
         <!-- INTRO (HATI) DENGAN ANIMASI PAUSE & EFEK -->
         <div class="slide" id="slide-0">
-            <h2 class="judul-cantik" id="intro-title" style="font-size: 2.5 rem; margin-bottom: 10px; transition: all 2s ease;"> Haiii Meizaa👋👋😹</h2>
+            <!-- Teks dipasang class intro-teks-tebal -->
+            <h2 class="judul-cantik intro-teks-tebal" id="intro-title"> Haiii Meizaa👋👋😹</h2>
+            
             <div class="heart-clickbait" onclick="startExperience(event)" id="mainHeart">🤍</div>
-            <p id="intro-sub" style="font-size: 1.1rem; opacity: 0.8; transition: all 0.5s ease;">Pencet tuh lopee lopee nyaa</p>
+            
+            <!-- Teks lope-lope diubah jadi Div dengan class bubble-teks -->
+            <div id="intro-sub" class="bubble-teks">Pencet tuh lopee lopee nyaa 👇</div>
         </div>
         
         <!-- SLIDE 1 (TYPEWRITER) -->
@@ -718,40 +770,50 @@
     </div>
 
     <script>
-        /* === LOGIKA CEK PIN DENGAN ANIMASI === */
-const correctPin = "1"; // PIN yang diminta
+        /* === LOGIKA CEK PIN DENGAN ANIMASI & AUTOPLAY MUSIK === */
+        const correctPin = "1"; // PIN yang diminta
 
-function checkPin() {
-    const inputVal = document.getElementById('pinInput').value.trim();
-    const errorEl = document.getElementById('pinError');
-    const overlay = document.getElementById('pin-overlay');
-    const pinBox = document.querySelector('.pin-box');
+        function checkPin() {
+            const inputVal = document.getElementById('pinInput').value.trim();
+            const errorEl = document.getElementById('pinError');
+            const overlay = document.getElementById('pin-overlay');
+            const pinBox = document.querySelector('.pin-box');
 
-    if (inputVal === correctPin) {
-        errorEl.innerText = "";
-        
-        // 1. Efek mengecil & memudar saat PIN benar
-        pinBox.style.transform = 'scale(0.8)';
-        pinBox.style.opacity = '0';
-        overlay.style.opacity = '0';
+            if (inputVal === correctPin) {
+                errorEl.innerText = "";
+                
+                // Efek mengecil & memudar saat PIN benar
+                pinBox.style.transform = 'scale(0.8)';
+                pinBox.style.opacity = '0';
+                overlay.style.opacity = '0';
 
-        setTimeout(() => {
-            overlay.style.display = 'none';
-            const slide0 = document.getElementById('slide-0');
-            slide0.style.display = 'flex';
-            slide0.classList.add('active');
-        }, 1500);
-    } else {
-        errorEl.innerText = "PW nya salahh, tanyaa ke wildan dulu😹";
-        document.getElementById('pinInput').value = "";
-        document.getElementById('pinInput').focus();
+                // === KODE BARU: AUTOPLAY MUSIK DI SINI ===
+                const bgMusic = document.getElementById('bgMusic');
+                const musicBtn = document.getElementById('musicToggleBtn');
+                
+                // Langsung putar musik saat PIN benar!
+                bgMusic.play();
+                isPlaying = true;
+                musicBtn.style.display = 'flex'; // Munculkan tombol kontrol musik
+                // ==========================================
 
-        // 2. Efek bergetar (shake) saat PIN salah
-        pinBox.classList.remove('pin-shake');
-        void pinBox.offsetWidth; // Trik agar animasi bisa diulang
-        pinBox.classList.add('pin-shake');
-    }
-}
+                setTimeout(() => {
+                    overlay.style.display = 'none';
+                    const slide0 = document.getElementById('slide-0');
+                    slide0.style.display = 'flex';
+                    slide0.classList.add('active');
+                }, 1500);
+            } else {
+                errorEl.innerText = "PW nya salahh, tanyaa ke wildan dulu😹";
+                document.getElementById('pinInput').value = "";
+                document.getElementById('pinInput').focus();
+
+                // Efek bergetar (shake) saat PIN salah
+                pinBox.classList.remove('pin-shake');
+                void pinBox.offsetWidth; // Trik agar animasi bisa diulang
+                pinBox.classList.add('pin-shake');
+            }
+        }
 
 
         /* === 1. SISTEM CANVAS KEMBANG API (FIREWORKS ENGINE) === */
@@ -862,11 +924,11 @@ function checkPin() {
         let isPlaying = false;
         let isStarted = false;
 
-        function startExperience(e) {
+                function startExperience(e) {
             if (isStarted) return;
             isStarted = true;
 
-            bgMusic.play();
+            // bgMusic.play() dihapus dari sini karena musik sudah nyala duluan dari PIN
             isPlaying = true;
             musicBtn.style.display = 'flex';
 
@@ -899,7 +961,7 @@ function checkPin() {
             heartBtn.style.transform = 'scale(0) rotate(180deg)';
             heartBtn.style.opacity = '0';
 
-            introTitle.innerHTML = "Happy Girlfriend Day Meizaa... ✨";
+            introTitle.innerHTML = "Happy Girlfriend Day Meizaa... 🥀✌️";
             introSub.innerHTML = "BY kakaaa😹✌️"
 
             setTimeout(() => {
