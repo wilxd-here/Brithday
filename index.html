@@ -453,7 +453,7 @@
             z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
         }
         .modal.active { opacity: 1; pointer-events: auto; }
-        ..modal-content {
+        .modal-content {
     background: rgba(255, 255, 255, 0.75); /* Transparan lembut */
     backdrop-filter: blur(16px);            /* Efek buram di belakang modal */
     -webkit-backdrop-filter: blur(16px);
@@ -549,7 +549,7 @@
 
     <!-- MUSIK -->
     <audio id="bgMusic" loop>
-        <source src="lagu.mp3" type="audio/mpeg">
+        <source src="lagu.mp3?v=1" type="audio/mpeg">
     </audio>
     <button class="music-btn" onclick="toggleMusic()" id="musicToggleBtn">⏸️ Jeda Laguy</button>
 
@@ -705,13 +705,14 @@
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal()">✖</button>
             <h2 class="judul-cantik" style="font-size: 2.5rem; margin-bottom: 15px;">Izinn meijaaa🙏👀</h2>
-            <video id="popupVideo" controls style="width: 100%; max-height: 250px; border-radius: 15px; margin-bottom: 15px; object-fit: cover;">
-    <source src="vidio.mp4" type="video/mp4">
+       <video id="popupVideo" controls playsinline style="width: 100%; max-height: 250px; border-radius: 15px; margin-bottom: 15px; object-fit: cover;">
+
+    <source src="vidio.mp4?v=1" type="video/mp4">
             </video>
 
             <p style="font-size: 1.1rem; line-height: 1.6; color: #444;">
                 <br><br>
-                <strong>Maaff yaaa akuu gaaa izinn bikinn ini kee kamuu. semoga kamu suka</strong>
+                <strong>Semangatt teruss. maaf nge jj in kamuu tanpa izin</strong>
             </p>
         </div>
     </div>
@@ -1008,7 +1009,7 @@ function checkPin() {
         }
 
         // Typewriter Slide 5
-        const messageText = "ohh iyaa maapinn kalauu adaa salahh. maapp kalau sifat aku kayaa marahh ke kamuu.karena masih gamau kehilangan kamu. tapi akuu udahh sadarr akuu gaboleh maksa kamuu kembali ke akuu. sekarang kamuu boleh ngelakuij apa yang kamuu mau lakuinn kamuu bolehh milikk cowo lainn karena akuu bukan milik kamu lagi. btw jangann lupain akuu. semangatt teruss "
+        const messageText = "ohh iyaa maapinn kalauu adaa salahh. maapp kalau sifat aku kayaa marahh ke kamuu.karena masih gamau kehilangan kamu. tapi akuu udahh sadarr akuu gaboleh maksa kamuu kembali ke akuu. sekarang kamuu boleh ngelakuin apa yang kamuu mau lakuinn kamuu bolehh milikk cowo lainn karena akuu bukan milik kamu lagi. btw jangann lupain akuu. semangatt teruss. see u next time "
         const typeEl = document.getElementById('type-text');
         let i = 0; let typeStarted = false;
 
@@ -1023,7 +1024,7 @@ function checkPin() {
         /* === 8. ROTASI ALASAN === */
         const reasons = [
             "Fokuss samaa tujuan kamuu",
-            "Lakuinn aoaa yang pentingg",
+            "Lakuinn apaa yang pentingg",
             "Utamainn ibadahh meiii, biar urusann lancarr",
             
         ];
