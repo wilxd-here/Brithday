@@ -757,8 +757,9 @@
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal()">✖</button>
             <h2 class="judul-cantik" style="font-size: 2.5rem; margin-bottom: 15px;">Gatauu inii apaa</h2>
-      <video id="popupVideo" controls playsinline preload="auto" style="width: 100%; max-height: 250px; border-radius: 15px; margin-bottom: 15px; object-fit: cover;">
+      <video id="popupVideo" controls playsinline preload="metadata" style="width: 100%; max-height: 250px; border-radius: 15px; margin-bottom: 15px; object-fit: cover;">
     <source src="vidio.mp4" type="video/mp4">
+    Browser kamu tidak mendukung pemutaran video.
 </video>
 
 
@@ -771,7 +772,7 @@
 
     <script>
         /* === LOGIKA CEK PIN DENGAN ANIMASI & AUTOPLAY MUSIK === */
-        const correctPin = "1"; // PIN yang diminta
+        const correctPin = "mewi0109"; // PIN yang diminta
 
         function checkPin() {
             const inputVal = document.getElementById('pinInput').value.trim();
@@ -804,7 +805,7 @@
                     slide0.classList.add('active');
                 }, 1500);
             } else {
-                errorEl.innerText = "PW nya salahh, tanyaa ke wildan dulu😹";
+                errorEl.innerText = "PW nya salahh clue nya Nama deoan kmau nama depan akuu, kalu nyerahh bilang ke akuu😹";
                 document.getElementById('pinInput').value = "";
                 document.getElementById('pinInput').focus();
 
@@ -850,16 +851,17 @@
                 this.alpha -= this.decay;
             }
             draw() {
-                ctx.save();
-                ctx.globalAlpha = this.alpha;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
-                ctx.fillStyle = this.color;
-                ctx.shadowBlur = 10;
-                ctx.shadowColor = this.color;
-                ctx.fill();
-                ctx.restore();
-            }
+    ctx.save();
+    ctx.globalAlpha = this.alpha;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    // ctx.shadowBlur = 10;        <-- Kasih // di depannya
+    // ctx.shadowColor = this.color; <-- Kasih // di depannya
+    ctx.fill();
+    ctx.restore();
+}
+
         }
 
         function createExplosion(x, y) {
@@ -898,7 +900,7 @@
                     leaf.style.animationDuration = (Math.random() * 3 + 3) + 's';
                     document.body.appendChild(leaf);
 
-                    setTimeout(() => leaf.remove(), 8000);
+                    setTimeout(() => leaf.remove(), 6000);
                 }, i * 120);
             }
         }
@@ -1012,7 +1014,7 @@
 /* === 5. PARTIKEL BACKGROUND === */
         function createParticles() {
             const container = document.getElementById('particles-container');
-            const items = ['🥀', '✨','🙈','🤍', '⭐','😹'];
+            const items = ['🥀','🙈','🤍', '⭐','😹'];
             setInterval(() => {
                 const el = document.createElement('div');
                 el.classList.add('particle');
@@ -1121,38 +1123,41 @@
       /* === 10. KONTROL MODAL, AUTOPLAY VIDEO & PAUSE MUSIK === */
 const secretModal = document.getElementById('secretModal');
 const popupVideo = document.getElementById('popupVideo');
-
 function openModal(e) {
-    // 1. Buka tampilan Modal Popup
     secretModal.classList.add('active');
 
-    // 2. Stop/Pause lagu.mp3 agar audio tidak bentrok
+    // Hentikan musik latar
     if (bgMusic) {
         bgMusic.pause();
         isPlaying = false;
-        musicBtn.innerHTML = '🎵 Putar Musik';
+        if (musicBtn) musicBtn.innerHTML = '🎵 Putar Musik';
     }
 
-    // 3. Putar video secara otomatis dari awal
+    // Putar video dengan aman
     if (popupVideo) {
-        popupVideo.currentTime = 0; // Mengulang dari detik 0
-        popupVideo.play();
+        popupVideo.currentTime = 0;
+        let playPromise = popupVideo.play();
+        if (playPromise !== undefined) {
+            playPromise.catch(error => {
+                console.log("Autoplay ditahan oleh browser, pengguna perlu menekan tombol play:", error);
+            });
+        }
     }
 }
 
 function closeModal() {
-    // 1. Tutup Modal Popup
     secretModal.classList.remove('active');
 
-    // 2. Pause video saat modal ditutup
     if (popupVideo) {
         popupVideo.pause();
     }
 
-    // 3. Putar kembali lagu.mp3 secara otomatis setelah video selesai/ditutup
-    bgMusic.play();
-    isPlaying = true;
-    musicBtn.innerHTML = '⏸️ Jeda Musik';
+    // Lanjutkan musik latar
+    if (bgMusic) {
+        bgMusic.play().catch(e => console.log(e));
+        isPlaying = true;
+        if (musicBtn) musicBtn.innerHTML = '⏸️ Jeda Musik';
+    }
 }
 
     </script>
