@@ -554,9 +554,8 @@
 
         .bubble-teks {
             background: rgba(255, 255, 255, 0.9); /* Putih transparan (Efek Kaca) */
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 182, 193, 0.9); /* Garis pinggir pink soft */
+            background: rgba(255, 255, 255, 0.9); /* Putih 90% tanpa efek blur */
+ 193, 0.9l; /* Garis pinggir pink soft */
             padding: 12px 30px;
             border-radius: 50px; /* Bentuk pil / gelembung melengkung */
             font-family: 'Poppins', sans-serif;
@@ -805,7 +804,7 @@
                     slide0.classList.add('active');
                 }, 1500);
             } else {
-                errorEl.innerText = "PW nya salahh clue nya Nama deoan kmau nama depan akuu, kalu nyerahh bilang ke akuu😹";
+                errorEl.innerText = "PW nya salahh clue nya Nama depan kamu nama depan akuu, kalu nyerahh bilang ke akuu😹";
                 document.getElementById('pinInput').value = "";
                 document.getElementById('pinInput').focus();
 
@@ -900,7 +899,7 @@
                     leaf.style.animationDuration = (Math.random() * 3 + 3) + 's';
                     document.body.appendChild(leaf);
 
-                    setTimeout(() => leaf.remove(), 6000);
+                    setTimeout(() => leaf.remove(), 5000);
                 }, i * 120);
             }
         }
@@ -1014,7 +1013,7 @@
 /* === 5. PARTIKEL BACKGROUND === */
         function createParticles() {
             const container = document.getElementById('particles-container');
-            const items = ['🥀','🙈','🤍', '⭐','😹'];
+            const items = ['🥀','🤍', '⭐','😹'];
             setInterval(() => {
                 const el = document.createElement('div');
                 el.classList.add('particle');
@@ -1023,8 +1022,8 @@
                 el.style.fontSize = (Math.random() * 15 + 10) + 'px';
                 el.style.animationDuration = (Math.random() * 10 + 5) + 's';
                 container.appendChild(el);
-                setTimeout(() => el.remove(), 20000);
-            }, 500);
+                setTimeout(() => el.remove(), 10000);
+            }, 1500);
         }
         createParticles();
 
