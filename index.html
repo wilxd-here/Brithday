@@ -5,10 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>For Meiza</title>
     
-    <!-- Mengambil font dari Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;400;500;600;900&display=swap" rel="stylesheet">
     
     <style>
         /* === RESET & VARIABEL === */
@@ -30,19 +29,18 @@
         }
 
         body {
-    font-family: 'Poppins', sans-serif;
-    color: var(--text-dark);
-    
-    /* Memanggil gambar sebagai background */
-    background: url('background.jpg') no-repeat center center fixed;
-    background-size: cover; /* Memastikan gambar menutupi seluruh layar */
-    
-    overflow: hidden; 
-    position: relative;
-    height: 100vh;
-    width: 100vw;
-}
-
+            font-family: 'Poppins', sans-serif;
+            color: var(--text-dark);
+            
+            /* Memanggil gambar sebagai background */
+            background: url('background.jpg') no-repeat center center fixed;
+            background-size: cover; 
+            
+            overflow: hidden; 
+            position: relative;
+            height: 100vh;
+            width: 100vw;
+        }
 
         h1, h2, h3, .judul-cantik {
             font-family: 'Dancing Script', cursive;
@@ -91,20 +89,10 @@
         }
 
         @keyframes leafFall {
-            0% {
-                transform: translateY(0) rotate(0deg) translateX(0) scale(0.8);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.9;
-            }
-            50% {
-                transform: translateY(50vh) rotate(180deg) translateX(50px) scale(1.1);
-            }
-            100% {
-                transform: translateY(105vh) rotate(360deg) translateX(-30px) scale(0.9);
-                opacity: 0;
-            }
+            0% { transform: translateY(0) rotate(0deg) translateX(0) scale(0.8); opacity: 0; }
+            10% { opacity: 0.9; }
+            50% { transform: translateY(50vh) rotate(180deg) translateX(50px) scale(1.1); }
+            100% { transform: translateY(105vh) rotate(360deg) translateX(-30px) scale(0.9); opacity: 0; }
         }
 
         /* === EFEK RIPPLE SAAT HATI DIKLIK === */
@@ -120,10 +108,7 @@
         }
 
         @keyframes rippleAnim {
-            to {
-                transform: scale(4);
-                opacity: 0;
-            }
+            to { transform: scale(4); opacity: 0; }
         }
 
         /* === EFEK DEBU BINTANG (SPARKLE TRAIL) === */
@@ -142,25 +127,13 @@
 
         /* === ANIMASI TRANSISI SLIDE MASUK & KELUAR === */
         @keyframes slideInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px) scale(0.95);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
+            from { opacity: 0; transform: translateY(30px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
         }
 
         @keyframes slideOutDown {
-            from {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-            to {
-                opacity: 0;
-                transform: translateY(-30px) scale(0.95);
-            }
+            from { opacity: 1; transform: translateY(0) scale(1); }
+            to { opacity: 0; transform: translateY(-30px) scale(0.95); }
         }
 
         /* === PARTIKEL (Bintang, Hati, Kelopak) === */
@@ -223,47 +196,25 @@
             max-width: 800px; width: 95%;
         }
 
-        /* === SISTEM PIN PASSWORD (EFEK KACA BERSINAR) === */
-#pin-overlay {
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%;
-    /* Mengubah latar tebal jadi transparan tipis agar gambar langit langsung kelihatan */
-    background: rgba(0, 0, 0, 0.2); 
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    display: flex; 
-    justify-content: center; 
-    align-items: center;
-    z-index: 9999; 
-    transition: opacity 0.5s ease;
-}
+        /* === SISTEM PIN PASSWORD === */
+        #pin-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px); display: flex; 
+            justify-content: center; align-items: center;
+            z-index: 9999; transition: opacity 0.5s ease;
+        }
 
-.pin-box {
-    /* Kotak PIN dibuat transparan berkilau */
-    background: rgba(255, 255, 255, 0.7); 
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.9); 
-    border-radius: 24px;
-    padding: 40px; 
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    max-width: 400px; 
-    width: 90%; 
-    text-align: center;
-}
-    
-    /* Animasi muncul pertama kali */
-    animation: pinPopIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-    transition: transform 0.5s ease, opacity 0.5s ease;
-}
+        .pin-box {
+            background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.9); 
+            border-radius: 24px; padding: 40px; box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            max-width: 400px; width: 90%; text-align: center;
+            animation: pinPopIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            transition: transform 0.5s ease, opacity 0.5s ease;
+        }
 
-/* Class tambahan saat PIN salah */
-.pin-shake {
-    animation: pinShake 0.4s ease-in-out !important;
-}
+        .pin-shake { animation: pinShake 0.4s ease-in-out !important; }
 
         .pin-input {
             width: 100%; padding: 12px 20px; margin: 20px 0 10px 0;
@@ -272,9 +223,8 @@
             text-align: center; font-family: 'Poppins', sans-serif;
             color: #d81b60; outline: none; transition: all 0.3s;
         }
-        .pin-input:focus {
-            border-color: #d81b60; box-shadow: 0 0 10px rgba(216, 27, 96, 0.2);
-        }
+        .pin-input:focus { border-color: #d81b60; box-shadow: 0 0 10px rgba(216, 27, 96, 0.2); }
+        
         .pin-btn {
             background: linear-gradient(45deg, #ff8a80, #ff4081);
             color: white; border: none; padding: 12px 30px;
@@ -283,6 +233,7 @@
             transition: all 0.3s ease; width: 100%; font-weight: 600;
         }
         .pin-btn:hover { transform: scale(1.03); box-shadow: 0 6px 20px rgba(255, 64, 129, 0.5); }
+        
         .pin-error {
             color: #d32f2f; font-size: 0.9rem; margin-top: 10px;
             min-height: 20px; font-weight: 500;
@@ -301,39 +252,21 @@
 
         /* === TOMBOL NAVIGASI SLIDE === */
         .next-btn {
-            background: rgba(255, 255, 255, 0.6);
-            border: 1px solid rgba(255, 182, 193, 0.8);
-            color: #d81b60;
-            padding: 12px 30px;
-            border-radius: 30px;
-            font-size: 1.1rem;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            margin-top: 35px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            box-shadow: 0 4px 15px rgba(216, 27, 96, 0.1);
-            transition: all 0.3s ease;
-            animation: float 2.5s ease-in-out infinite;
-            text-decoration: none;
-            user-select: none;
+            background: rgba(255, 255, 255, 0.6); border: 1px solid rgba(255, 182, 193, 0.8);
+            color: #d81b60; padding: 12px 30px; border-radius: 30px; font-size: 1.1rem;
+            font-family: 'Poppins', sans-serif; font-weight: 600; cursor: pointer;
+            margin-top: 35px; display: inline-flex; align-items: center; justify-content: center;
+            gap: 10px; box-shadow: 0 4px 15px rgba(216, 27, 96, 0.1); transition: all 0.3s ease;
+            animation: float 2.5s ease-in-out infinite; text-decoration: none; user-select: none;
         }
         .next-btn:hover {
-            background: linear-gradient(45deg, #ff8a80, #ff4081);
-            color: #fff;
-            border-color: transparent;
-            transform: scale(1.05);
-            box-shadow: 0 8px 25px rgba(216, 27, 96, 0.4);
-            animation: none; 
+            background: linear-gradient(45deg, #ff8a80, #ff4081); color: #fff;
+            border-color: transparent; transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(216, 27, 96, 0.4); animation: none; 
         }
 
         /* === PENGHITUNG WAKTU === */
-        .counter-grid {
-            display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap;
-        }
+        .counter-grid { display: flex; justify-content: center; gap: 15px; margin-top: 20px; flex-wrap: wrap; }
         .time-box {
             background: rgba(255, 255, 255, 0.6); padding: 15px;
             border-radius: 15px; min-width: 90px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -341,78 +274,38 @@
         .time-box span { display: block; font-size: 1.8rem; font-weight: 600; color: #d81b60; }
         .time-box small { font-size: 0.9rem; color: #666; }
 
-        /* === DESAIN GALERI (2 KOLOM) === */
+        /* === DESAIN GALERI === */
         .gallery-grid-new {
-            display: grid; 
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px; 
-            margin-top: 30px; 
-            width: 100%;
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 20px; margin-top: 30px; width: 100%;
         }
         
         .photo-card-new {
-    background: rgba(255, 245, 248, 0.85); /* Pink pastel transparan halus */
-    backdrop-filter: blur(8px);
-    border-radius: 16px;
-    overflow: hidden; 
-    box-shadow: 0 10px 25px rgba(216, 27, 96, 0.12); 
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    display: flex;
-    flex-direction: column;
-    border: 1px solid rgba(255, 182, 193, 0.6);
-}
-
-        .photo-card-new:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(216, 27, 96, 0.25);
+            background: rgba(255, 245, 248, 0.85); backdrop-filter: blur(8px);
+            border-radius: 16px; overflow: hidden; 
+            box-shadow: 0 10px 25px rgba(216, 27, 96, 0.12); 
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex; flex-direction: column; border: 1px solid rgba(255, 182, 193, 0.6);
         }
+        .photo-card-new:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(216, 27, 96, 0.25); }
 
         .card-header-new {
-            background: #fff0f3; 
-            padding: 12px 15px;
-            color: #d81b60;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 600;
-            font-size: 0.9rem;
-            text-align: left;
-            border-bottom: 2px solid #ffb6c1;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: #fff0f3; padding: 12px 15px; color: #d81b60;
+            font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 0.9rem;
+            text-align: left; border-bottom: 2px solid #ffb6c1;
+            display: flex; justify-content: space-between; align-items: center;
         }
 
-        .img-wrapper {
-            width: 100%;
-            height: 200px; 
-            overflow: hidden;
-        }
-        .img-wrapper img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: cover; 
-            transition: transform 0.5s ease;
-        }
-        .photo-card-new:hover .img-wrapper img {
-            transform: scale(1.08); 
-        }
+        .img-wrapper { width: 100%; height: 200px; overflow: hidden; }
+        .img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .photo-card-new:hover .img-wrapper img { transform: scale(1.08); }
 
-        .card-body-new {
-            padding: 15px;
-            text-align: left;
-        }
+        .card-body-new { padding: 15px; text-align: left; }
         .card-body-new h3 {
-            font-family: 'Dancing Script', cursive;
-            color: #d81b60;
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-            text-shadow: 1px 1px 2px rgba(216, 27, 96, 0.1);
+            font-family: 'Dancing Script', cursive; color: #d81b60;
+            font-size: 1.5rem; margin-bottom: 5px; text-shadow: 1px 1px 2px rgba(216, 27, 96, 0.1);
         }
-        .card-body-new p {
-            margin: 0;
-            font-size: 0.85rem;
-            color: #666;
-            line-height: 1.5;
-        }
+        .card-body-new p { margin: 0; font-size: 0.85rem; color: #666; line-height: 1.5; }
 
         @media (max-width: 600px) { 
             .gallery-grid-new { gap: 12px; }
@@ -426,22 +319,15 @@
         }
 
         /* === KATA-KATA UCAPAN (Typewriter) === */
-        .typewriter-container {
-            font-size: 1.1rem; line-height: 1.8; text-align: left; min-height: 100px;
-        }
-        .cursor {
-            display: inline-block; width: 3px; height: 1em;
-            background-color: #d81b60; animation: blink 0.7s infinite; vertical-align: middle;
-        }
+        .typewriter-container { font-size: 1.1rem; line-height: 1.8; text-align: left; min-height: 100px; }
+        .cursor { display: inline-block; width: 3px; height: 1em; background-color: #d81b60; animation: blink 0.7s infinite; vertical-align: middle; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
         /* === TOMBOL PESAN RAHASIA === */
         .btn-special {
-            background: linear-gradient(45deg, #ff8a80, #ff4081);
-            color: white; border: none; padding: 15px 35px;
-            font-size: 1.2rem; font-family: inherit; border-radius: 50px;
-            cursor: pointer; box-shadow: 0 10px 20px rgba(255, 64, 129, 0.3);
-            animation: pulseGlow 2s infinite; transition: all 0.3s ease;
+            background: linear-gradient(45deg, #ff8a80, #ff4081); color: white; border: none; padding: 15px 35px;
+            font-size: 1.2rem; font-family: inherit; border-radius: 50px; cursor: pointer; 
+            box-shadow: 0 10px 20px rgba(255, 64, 129, 0.3); animation: pulseGlow 2s infinite; transition: all 0.3s ease;
         }
         .btn-special:hover { transform: scale(1.08); box-shadow: 0 15px 30px rgba(255, 64, 129, 0.5); }
 
@@ -453,97 +339,45 @@
             z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
         }
         .modal.active { opacity: 1; pointer-events: auto; }
+        
         .modal-content {
-    background: rgba(255, 255, 255, 0.75); /* Transparan lembut */
-    backdrop-filter: blur(16px);            /* Efek buram di belakang modal */
-    -webkit-backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.8);
-    border-radius: 24px;
-    padding: 40px;
-    max-width: 500px; 
-    width: 90%; 
-    text-align: center;
-    transform: scale(0.8) rotate(-5deg); 
-    transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    box-shadow: 0 20px 40px rgba(216, 27, 96, 0.2); 
-    position: relative;
-}
+            background: rgba(255, 255, 255, 0.75); backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.8);
+            border-radius: 24px; padding: 40px; max-width: 500px; width: 90%; text-align: center;
+            transform: scale(0.8) rotate(-5deg); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 20px 40px rgba(216, 27, 96, 0.2); position: relative;
+        }
         .modal.active .modal-content { transform: scale(1) rotate(0deg); }
+        
         .close-btn {
-    position: absolute; 
-    top: 15px; 
-    right: 15px;
-    background: rgba(255, 255, 255, 0.8); 
-    border: 1px solid rgba(216, 27, 96, 0.2); 
-    border-radius: 50%;
-    width: 35px; 
-    height: 35px; 
-    cursor: pointer;
-    font-size: 1.2rem; 
-    color: #d81b60; 
-    transition: all 0.3s;
-}
-.close-btn:hover { 
-    background: #ffebee; 
-    transform: scale(1.1);
-}
-
-   
-        .judul-momen {
-            margin-top: 15px;
-            margin-bottom: 5px; 
-            font-weight: 700;
-            color: #d81b60;
-            font-size: 1.1rem;
-            font-family: 'Poppins', sans-serif;
-            letter-spacing: 0.5px;
+            position: absolute; top: 15px; right: 15px;
+            background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(216, 27, 96, 0.2); 
+            border-radius: 50%; width: 35px; height: 35px; cursor: pointer;
+            font-size: 1.2rem; color: #d81b60; transition: all 0.3s;
         }
-      /* === EFEK PARTIKEL DEBU CAHAYA / LIGHT MOTES === */
-.light-particle {
-    position: fixed;
-    border-radius: 50%;
-    /* Efek pendaran cahaya berkilau */
-    background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 235, 204, 0.6) 60%, transparent 100%);
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 215, 0, 0.5);
-    pointer-events: none;
-    z-index: 1; /* Di bawah teks, di atas gambar background */
-    animation: floatGlow linear infinite;
-}
+        .close-btn:hover { background: #ffebee; transform: scale(1.1); }
 
-@keyframes floatGlow {
-    0% {
-        transform: translateY(105vh) scale(0.3);
-        opacity: 0;
-    }
-    20% {
-        opacity: 0.9;
-    }
-    80% {
-        opacity: 0.9;
-    }
-    100% {
-        transform: translateY(-10vh) scale(1.2);
-        opacity: 0;
-    }
-}
-              /* === DESAIN TEKS INTRO & BUBBLE (BARU) === */
+        /* === EFEK PARTIKEL DEBU CAHAYA / LIGHT MOTES === */
+        .light-particle {
+            position: fixed; border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 1) 0%, rgba(255, 235, 204, 0.6) 60%, transparent 100%);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.9), 0 0 20px rgba(255, 215, 0, 0.5);
+            pointer-events: none; z-index: 1; animation: floatGlow linear infinite;
+        }
+        @keyframes floatGlow {
+            0% { transform: translateY(105vh) scale(0.3); opacity: 0; }
+            20% { opacity: 0.9; }
+            80% { opacity: 0.9; }
+            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
+        }
+
+        /* === DESAIN TEKS INTRO & BUBBLE (BARU) === */
         .intro-teks-tebal {
-            font-family: 'Dancing Script', cursive;
-            font-size: 4rem !important; /* Diperbesar ukurannya */
-            font-weight: 900;
-            color: #d81b60; 
-            /* Outline putih tebal biar sangat kontras sama langit */
-            text-shadow: 
-                -2px -2px 0 #fff,  
-                 2px -2px 0 #fff,
-                -2px  2px 0 #fff,
-                 2px  2px 0 #fff,
-                 0px  5px 15px rgba(0,0,0,0.6); 
-            animation: floatGoyang 3s ease-in-out infinite;
-            margin-bottom: 10px;
-            z-index: 10;
+            font-family: 'Dancing Script', cursive; font-size: 4rem !important;
+            font-weight: 900; color: #d81b60; 
+            text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff, 0px 5px 15px rgba(0,0,0,0.6); 
+            animation: floatGoyang 3s ease-in-out infinite; margin-bottom: 10px; z-index: 10;
         }
-
         @keyframes floatGoyang {
             0% { transform: translateY(0) rotate(0deg); }
             25% { transform: translateY(-10px) rotate(-3deg); }
@@ -551,39 +385,31 @@
             75% { transform: translateY(-10px) rotate(3deg); }
             100% { transform: translateY(0) rotate(0deg); }
         }
-.bubble-teks {
-    background: rgba(255, 255, 255, 0.9); /* Putih transparan (Efek Kaca) */
-    border: 1px solid rgba(255, 182, 193, 0.9); /* Garis pinggir pink soft */
-    padding: 12px 30px;
-    border-radius: 50px; /* Bentuk pil gelembung melengkung */
-    /* ... sisanya ke bawah biarin aja tetep sama ... */
-
-            font-family: 'Poppins', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #d81b60;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
-            animation: bounceLembut 2s infinite;
-            margin-top: 10px;
-            z-index: 10;
+        
+        .bubble-teks {
+            background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(255, 182, 193, 0.9); 
+            padding: 12px 30px; border-radius: 50px; font-family: 'Poppins', sans-serif;
+            font-size: 1.1rem; font-weight: 700; color: #d81b60; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.25);
+            animation: bounceLembut 2s infinite; margin-top: 10px; z-index: 10;
         }
-
         @keyframes bounceLembut {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-10px); }
         }
 
-
+        /* === KUSTOMISASI FONT JUDUL (Khusus untuk Meiza) === */
+        #intro-title {
+            font-family: 'Poppins', sans-serif !important;
+            font-weight: 900 !important;
+            text-shadow: -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff, 2px 2px 0 #fff, 0px 5px 15px rgba(0,0,0,0.6) !important; 
+        }
     </style>
 </head>
 <body>
 
-    <!-- CANVAS UNTUK EFEK KEMBANG API -->
     <canvas id="fireworksCanvas"></canvas>
-
     <div id="particles-container"></div>
 
-    <!-- KOTAK INPUT PIN PASSWORD -->
     <div id="pin-overlay">
         <div class="pin-box">
             <h2 class="judul-cantik" style="font-size: 2.5rem; margin-bottom: 10px;">Masukkan Pw </h2>
@@ -594,182 +420,149 @@
         </div>
     </div>
 
-        <!-- MUSIK -->
     <audio id="bgMusic" loop preload="auto">
         <source src="lagu.mp3?v=1" type="audio/mpeg">
     </audio>
     <button class="music-btn" onclick="toggleMusic()" id="musicToggleBtn">⏸️ Jeda Laguy</button>
 
-        
-                        <!-- INTRO (HATI) MENGGUNAKAN MP4 -->
-        <div class="slide" id="slide-0">
-            <!-- Ganti tag img jadi video yang autoplay & loop -->
-            <video src="hello.mp4" autoplay loop muted playsinline style="width: 110px; height: 110px; object-fit: cover; border-radius: 50%; margin-bottom: 5px; box-shadow: 0 8px 25px rgba(216, 27, 96, 0.25); border: 2px solid rgba(255, 182, 193, 0.8);"></video>
-            
-            <h2 class="judul-cantik intro-teks-tebal" id="intro-title"> Haiii Meizaa👋👋😹</h2>
-            
-            <div class="heart-clickbait" onclick="startExperience(event)" id="mainHeart">🤍</div>
-            
-            <div id="intro-sub" class="bubble-teks">Pencet Love putihh nyaa</div>
-        </div>
+    <div class="slide" id="slide-0">
+        <video src="hello.mp4" autoplay loop muted playsinline style="width: 110px; height: 110px; object-fit: cover; border-radius: 50%; margin-bottom: 5px; box-shadow: 0 8px 25px rgba(216, 27, 96, 0.25); border: 2px solid rgba(255, 182, 193, 0.8);"></video>
+        <h2 class="judul-cantik intro-teks-tebal" id="intro-title"> Haiii Meizaa👋👋😹</h2>
+        <div class="heart-clickbait" onclick="startExperience(event)" id="mainHeart">🤍</div>
+        <div id="intro-sub" class="bubble-teks">Pencet Love putihh nyaa</div>
+    </div>
 
-        <!-- SLIDE 1 (TYPEWRITER) -->
-        <div class="slide" id="slide-1">
-            <div class="glass-box">
-                <h1 class="judul-cantik" style="font-size: 3.5rem; margin-bottom: 20px;">About</h1>
-                <div class="typewriter-container" style="font-size: 1.2rem; line-height: 1.6; min-height: 50px;">
-                    <span id="type-text-1"></span><span class="cursor"></span>
-                </div>
-                <div class="next-btn" onclick="nextSlide(2)">Lanjut ✨</div>
+    <div class="slide" id="slide-1">
+        <div class="glass-box">
+            <h1 class="judul-cantik" style="font-size: 3.5rem; margin-bottom: 20px;">About</h1>
+            <div class="typewriter-container" style="font-size: 1.2rem; line-height: 1.6; min-height: 50px;">
+                <span id="type-text-1"></span><span class="cursor"></span>
             </div>
+            <div class="next-btn" onclick="nextSlide(2)">Lanjut ✨</div>
         </div>
+    </div>
 
-        <!-- SLIDE 2: WAKTU -->
-        <div class="slide" id="slide-2">
-            <div class="glass-box">
-                <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 10px;">period of getting to know each other</h2>
-                <p style="font-size: 1.1rem;">Ini Waktu Kita selama Saling kenall (KAYAKNYAA sii tapii gatau)</p>
-                <div class="counter-grid">
-                    <div class="time-box"><span id="c-days">0</span><small>Hari</small></div>
-                    <div class="time-box"><span id="c-hours">0</span><small>Jam</small></div>
-                    <div class="time-box"><span id="c-mins">0</span><small>Menit</small></div>
-                    <div class="time-box"><span id="c-secs">0</span><small>Detik</small></div>
-                </div>
-                <div class="next-btn" onclick="nextSlide(3)">Lanjut ✨</div>
+    <div class="slide" id="slide-2">
+        <div class="glass-box">
+            <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 10px;">period of getting to know each other</h2>
+            <p style="font-size: 1.1rem;">Ini Waktu Kita selama Saling kenall (KAYAKNYAA sii tapii gatau)</p>
+            <div class="counter-grid">
+                <div class="time-box"><span id="c-days">0</span><small>Hari</small></div>
+                <div class="time-box"><span id="c-hours">0</span><small>Jam</small></div>
+                <div class="time-box"><span id="c-mins">0</span><small>Menit</small></div>
+                <div class="time-box"><span id="c-secs">0</span><small>Detik</small></div>
             </div>
+            <div class="next-btn" onclick="nextSlide(3)">Lanjut ✨</div>
         </div>
-    <!-- SLIDE 3: ALASAN (TYPEWRITER) -->
-        <div class="slide" id="slide-3">
-            <div class="glass-box">
-                <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 15px;">Anything</h2>
-                <div class="typewriter-container" style="margin-bottom: 20px; min-height: 30px;">
-                    <span id="type-text-3"></span><span class="cursor"></span>
-                </div>
-                <div id="reason-text">"[Alasan Pertama Muncul di Sini]"</div>
-                <div class="next-btn" onclick="nextSlide(4)">Lanjut ✨</div>
-            </div>
-        </div>
+    </div>
 
-        <!-- SLIDE 4: GALERI -->
-        <div class="slide" id="slide-4">
-            <div class="glass-box">
-                <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 10px;">Foto Kamuu YAng imut ( KATANYA) 📸</h2>
-                <p style="margin-bottom: 5px; color: #d81b60; font-weight: 600;"></p>
-                <p style="margin-bottom: 20px; opacity: 0.8;">Semua foto Kamu yang imut (KATANYA)</p>
+    <div class="slide" id="slide-3">
+        <div class="glass-box">
+            <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 15px;">Anything</h2>
+            <div class="typewriter-container" style="margin-bottom: 20px; min-height: 30px;">
+                <span id="type-text-3"></span><span class="cursor"></span>
+            </div>
+            <div id="reason-text">"[Alasan Pertama Muncul di Sini]"</div>
+            <div class="next-btn" onclick="nextSlide(4)">Lanjut ✨</div>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-4">
+        <div class="glass-box">
+            <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 10px;">Foto Kamuu YAng imut ( KATANYA) 📸</h2>
+            <p style="margin-bottom: 20px; opacity: 0.8;">Semua foto Kamu yang imut (KATANYA)</p>
+            
+            <div class="gallery-grid-new">
+                <div class="photo-card-new">
+                    <div class="card-header-new">
+                        <span>Yang inii cantik imutt 100/10</span>
+                        <span style="font-size: 0.8rem; opacity: 0.8;">01 Jul 2026</span>
+                    </div>
+                    <div class="img-wrapper"><img src="./foto1.png" alt="Momen 1"></div>
+                    <div class="card-body-new">
+                        <h3>Gallery 1</h3>
+                        <p>Kiww Meijaa.Request mesi bun + kacamata kirim 5 yaaaa</p>
+                    </div>
+                </div>
                 
-                <div class="gallery-grid-new">
-                    
-                    <!-- KARTU 1 -->
-                    <div class="photo-card-new">
-                        <div class="card-header-new">
-                            <span> 
-                          Yang inii cantik imutt 100/10</span>
-                            <span style="font-size: 0.8rem; opacity: 0.8;">01 Jul 2026</span>
-                        </div>
-                        <div class="img-wrapper">
-                            <img src="./foto1.png" alt="Momen 1">
-                        </div>
-                        <div class="card-body-new">
-                            <h3>Gallery 1</h3>
-                            <p>Kiww Meijaa.Request mesi bun + kacamata kirim 5 yaaaa</p>
-                        </div>
+                <div class="photo-card-new">
+                    <div class="card-header-new">
+                        <span>Yang ini jugaa imutt aku kasihh reting 100/10</span>
+                        <span style="font-size: 0.8rem; opacity: 0.8;">9 Jul 2026</span>
                     </div>
-                    
-                    <!-- KARTU 2 -->
-                    <div class="photo-card-new">
-                        <div class="card-header-new">
-                            <span>Yang ini jugaa imutt aku kasihh reting 100/10</span>
-                            <span style="font-size: 0.8rem; opacity: 0.8;">9 Jul 2026</span>
-                        </div>
-                        <div class="img-wrapper">
-                            <img src="./foto2.png" alt="Momen 2">
-                        </div>
-                        <div class="card-body-new">
-                            <h3>Gallery 2</h3>
-                            <p>putihh bangett pastii pakee sunscrenn. ngapainn pke gituu siang siangg pedahall udahh cantikk. tapi gapapa<p>
-                        </div>
+                    <div class="img-wrapper"><img src="./foto2.png" alt="Momen 2"></div>
+                    <div class="card-body-new">
+                        <h3>Gallery 2</h3>
+                        <p>putihh bangett pastii pakee sunscrenn. ngapainn pke gituu siang siangg pedahall udahh cantikk. tapi gapapa</p>
                     </div>
-                    
-                    <!-- KARTU 3 -->
-                    <div class="photo-card-new">
-                        <div class="card-header-new">
-                            <span>yang inii 100/10 jugaaa</span>
-                            <span style="font-size: 0.8rem; opacity: 0.8;">Gatau kapan</span>
-                        </div>
-                        <div class="img-wrapper">
-                            <img src="./foto3.png" alt="Momen 3">
-                        </div>
-                        <div class="card-body-new">
-                            <h3>Gallery 3</h3>
-                            <p>Yang inii cantikk jugaaa, apaa lagii mesii bunn + kacamataa + dikirimm 5 potoo😹</p>
-                        </div>
-                    </div>
-                    
-                    <!-- KARTU 4 -->
-                    <div class="photo-card-new">
-                        <div class="card-header-new">
-                            <span>Inii 100/10 jugaa dehhh</span>
-                            <span style="font-size: 0.8rem; opacity: 0.8;">15 Jul 2026</span>
-                        </div>
-                        <div class="img-wrapper">
-                            <img src="./foto4.png" alt="Momen 4">
-                        </div>
-                        <div class="card-body-new">
-                            <h3>Gallery 4</h3>
-                            <p>Cantik bangett hd foto nyaaa. tapii adaa setikerr rusuhh🥀</p>
-                        </div>
-                    </div>
-
                 </div>
-                <div class="next-btn" onclick="nextSlide(5)">Lanjut ✨</div>
-            </div>
-        </div>
-
-        <!-- SLIDE 5: TYPEWRITER -->
-        <div class="slide" id="slide-5">
-            <div class="glass-box">
-                <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 20px;">For You</h2>
-                <div class="typewriter-container">
-                    <span id="type-text"></span><span class="cursor"></span>
-                </div>
-                <div class="next-btn" onclick="nextSlide(6)">Lanjut ✨</div>
-            </div>
-        </div>
-
-        <!-- SLIDE 6: PENUTUP -->
-        <div class="slide" id="slide-6">
-            <div class="glass-box" style="background: rgba(255,192,203,0.3); border: 2px dashed #ff8a80;">
-                <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 20px;">End</h2>
-                <p style="margin-bottom: 30px; font-size: 1.1rem;">Gatau ini apaann, cobaa kamu klik ajaa</p>
-                <button class="btn-special" onclick="openModal(event)">Mulai</button>
                 
-                <div style="margin-top: 40px; font-style: italic; color: #666; min-height: 50px;">
-                    <p id="footer-quote">"[Quote Berjalan Pertama]"</p>
+                <div class="photo-card-new">
+                    <div class="card-header-new">
+                        <span>yang inii 100/10 jugaaa</span>
+                        <span style="font-size: 0.8rem; opacity: 0.8;">Gatau kapan</span>
+                    </div>
+                    <div class="img-wrapper"><img src="./foto3.png" alt="Momen 3"></div>
+                    <div class="card-body-new">
+                        <h3>Gallery 3</h3>
+                        <p>Yang inii cantikk jugaaa, apaa lagii mesii bunn + kacamataa + dikirimm 5 potoo😹</p>
+                    </div>
+                </div>
+                
+                <div class="photo-card-new">
+                    <div class="card-header-new">
+                        <span>Inii 100/10 jugaa dehhh</span>
+                        <span style="font-size: 0.8rem; opacity: 0.8;">15 Jul 2026</span>
+                    </div>
+                    <div class="img-wrapper"><img src="./foto4.png" alt="Momen 4"></div>
+                    <div class="card-body-new">
+                        <h3>Gallery 4</h3>
+                        <p>Cantik bangett hd foto nyaaa. tapii adaa setikerr rusuhh🥀</p>
+                    </div>
                 </div>
             </div>
+            <div class="next-btn" onclick="nextSlide(5)">Lanjut ✨</div>
         </div>
+    </div>
 
-    <!-- MODAL (POPUP PESAN RAHASIA) -->
+    <div class="slide" id="slide-5">
+        <div class="glass-box">
+            <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 20px;">For You</h2>
+            <div class="typewriter-container">
+                <span id="type-text"></span><span class="cursor"></span>
+            </div>
+            <div class="next-btn" onclick="nextSlide(6)">Lanjut ✨</div>
+        </div>
+    </div>
+
+    <div class="slide" id="slide-6">
+        <div class="glass-box" style="background: rgba(255,192,203,0.3); border: 2px dashed #ff8a80;">
+            <h2 class="judul-cantik" style="font-size: 3rem; margin-bottom: 20px;">End</h2>
+            <p style="margin-bottom: 30px; font-size: 1.1rem;">Gatau ini apaann, cobaa kamu klik ajaa</p>
+            <button class="btn-special" onclick="openModal(event)">Mulai</button>
+            <div style="margin-top: 40px; font-style: italic; color: #666; min-height: 50px;">
+                <p id="footer-quote">"[Quote Berjalan Pertama]"</p>
+            </div>
+        </div>
+    </div>
+
     <div class="modal" id="secretModal">
         <div class="modal-content">
             <button class="close-btn" onclick="closeModal()">✖</button>
             <h2 class="judul-cantik" style="font-size: 2.5rem; margin-bottom: 15px;">Gatauu inii apaa</h2>
-      <video id="popupVideo" controls playsinline preload="metadata" style="width: 100%; max-height: 250px; border-radius: 15px; margin-bottom: 15px; object-fit: cover;">
-    <source src="vidio.mp4?v=1" type="video/mp4">
-    Browser kamu tidak mendukung pemutaran video.
-</video>
-
-
+            <video id="popupVideo" controls playsinline preload="metadata" style="width: 100%; max-height: 250px; border-radius: 15px; margin-bottom: 15px; object-fit: cover;">
+                <source src="vidio.mp4?v=1" type="video/mp4">
+                Browser kamu tidak mendukung pemutaran video.
+            </video>
             <p style="font-size: 1.1rem; line-height: 1.6; color: #444;">
                 <br><br>
                 <strong>Ini awal nya ada di fyp aku, jadi aku pengen bikin pake foto kamu, maaf ya entar aku hapus kok. Anggap aja cuma jj bukan berati aku ngaku sebagai kamu cewe aku</strong>
             </p>
         </div>
     </div>
-
     <script>
         /* === LOGIKA CEK PIN DENGAN ANIMASI & AUTOPLAY MUSIK === */
-        const correctPin = "mewi0109"; // PIN yang diminta
+        const correctPin = "mewi0109"; 
 
         function checkPin() {
             const inputVal = document.getElementById('pinInput').value.trim();
@@ -779,21 +572,16 @@
 
             if (inputVal === correctPin) {
                 errorEl.innerText = "";
-                
-                // Efek mengecil & memudar saat PIN benar
                 pinBox.style.transform = 'scale(0.8)';
                 pinBox.style.opacity = '0';
                 overlay.style.opacity = '0';
 
-                // === KODE BARU: AUTOPLAY MUSIK DI SINI ===
                 const bgMusic = document.getElementById('bgMusic');
                 const musicBtn = document.getElementById('musicToggleBtn');
                 
-                // Langsung putar musik saat PIN benar!
                 bgMusic.play();
                 isPlaying = true;
-                musicBtn.style.display = 'flex'; // Munculkan tombol kontrol musik
-                // ==========================================
+                musicBtn.style.display = 'flex'; 
 
                 setTimeout(() => {
                     overlay.style.display = 'none';
@@ -806,15 +594,13 @@
                 document.getElementById('pinInput').value = "";
                 document.getElementById('pinInput').focus();
 
-                // Efek bergetar (shake) saat PIN salah
                 pinBox.classList.remove('pin-shake');
-                void pinBox.offsetWidth; // Trik agar animasi bisa diulang
+                void pinBox.offsetWidth; 
                 pinBox.classList.add('pin-shake');
             }
         }
 
-
-        /* === 1. SISTEM CANVAS KEMBANG API (FIREWORKS ENGINE) === */
+        /* === 1. SISTEM CANVAS KEMBANG API === */
         const canvas = document.getElementById('fireworksCanvas');
         const ctx = canvas.getContext('2d');
         let particlesFW = [];
@@ -828,37 +614,22 @@
 
         class ParticleFW {
             constructor(x, y, color) {
-                this.x = x;
-                this.y = y;
-                this.color = color;
+                this.x = x; this.y = y; this.color = color;
                 const angle = Math.random() * Math.PI * 2;
                 const speed = Math.random() * 6 + 2;
-                this.vx = Math.cos(angle) * speed;
-                this.vy = Math.sin(angle) * speed;
-                this.alpha = 1;
-                this.decay = Math.random() * 0.02 + 0.015;
+                this.vx = Math.cos(angle) * speed; this.vy = Math.sin(angle) * speed;
+                this.alpha = 1; this.decay = Math.random() * 0.02 + 0.015;
                 this.gravity = 0.12;
             }
             update() {
-                this.vx *= 0.98;
-                this.vy *= 0.98;
-                this.vy += this.gravity;
-                this.x += this.vx;
-                this.y += this.vy;
-                this.alpha -= this.decay;
+                this.vx *= 0.98; this.vy *= 0.98; this.vy += this.gravity;
+                this.x += this.vx; this.y += this.vy; this.alpha -= this.decay;
             }
             draw() {
-    ctx.save();
-    ctx.globalAlpha = this.alpha;
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
-    ctx.fillStyle = this.color;
-    // ctx.shadowBlur = 10;        <-- Kasih // di depannya
-    // ctx.shadowColor = this.color; <-- Kasih // di depannya
-    ctx.fill();
-    ctx.restore();
-}
-
+                ctx.save(); ctx.globalAlpha = this.alpha; ctx.beginPath();
+                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
+                ctx.fillStyle = this.color; ctx.fill(); ctx.restore();
+            }
         }
 
         function createExplosion(x, y) {
@@ -873,21 +644,17 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             for (let i = particlesFW.length - 1; i >= 0; i--) {
                 const p = particlesFW[i];
-                p.update();
-                p.draw();
-                if (p.alpha <= 0) {
-                    particlesFW.splice(i, 1);
-                }
+                p.update(); p.draw();
+                if (p.alpha <= 0) { particlesFW.splice(i, 1); }
             }
             requestAnimationFrame(animateFireworks);
         }
         animateFireworks();
 
-        /* === 2. ANIMASI DEDAUNAN GUGUR (LEAF RAIN) === */
+        /* === 2. ANIMASI DEDAUNAN GUGUR === */
         function triggerLeafShower() {
             const leaves = [ '🌿', '🍁', '😹','🙈','🥳','✌️','🥀'];
-            const totalLeaves = 35;
-            for (let i = 0; i < totalLeaves; i++) {
+            for (let i = 0; i < 35; i++) {
                 setTimeout(() => {
                     const leaf = document.createElement('div');
                     leaf.classList.add('leaf-particle');
@@ -896,20 +663,18 @@
                     leaf.style.fontSize = (Math.random() * 18 + 14) + 'px';
                     leaf.style.animationDuration = (Math.random() * 3 + 3) + 's';
                     document.body.appendChild(leaf);
-
                     setTimeout(() => leaf.remove(), 5000);
                 }, i * 120);
             }
         }
 
-        /* === 3. DEBU BINTANG DI KURSOR (SPARKLE TRAIL) === */
+        /* === 3. DEBU BINTANG DI KURSOR === */
         window.addEventListener('mousemove', (e) => {
             if (Math.random() < 0.2) {
                 const sparkle = document.createElement('div');
                 sparkle.classList.add('sparkle-trail');
                 sparkle.innerText = Math.random() > 0.5 ? '✨' : '🌸';
-                sparkle.style.left = e.clientX + 'px';
-                sparkle.style.top = e.clientY + 'px';
+                sparkle.style.left = e.clientX + 'px'; sparkle.style.top = e.clientY + 'px';
                 sparkle.style.setProperty('--tx', (Math.random() * 40 - 20) + 'px');
                 sparkle.style.setProperty('--ty', (Math.random() * 40 - 20) + 'px');
                 document.body.appendChild(sparkle);
@@ -917,29 +682,23 @@
             }
         });
 
-        /* === 4. EFEK KLIK INTRO BERSAMA JEDA PAUSE & KEMBANG API === */
+        /* === 4. EFEK KLIK INTRO === */
         const bgMusic = document.getElementById('bgMusic');
         const musicBtn = document.getElementById('musicToggleBtn');
-        let isPlaying = false;
-        let isStarted = false;
+        let isPlaying = false; let isStarted = false;
 
-                function startExperience(e) {
+        function startExperience(e) {
             if (isStarted) return;
             isStarted = true;
-
-            // bgMusic.play() dihapus dari sini karena musik sudah nyala duluan dari PIN
-            isPlaying = true;
-            musicBtn.style.display = 'flex';
+            isPlaying = true; musicBtn.style.display = 'flex';
 
             const clickX = e ? e.clientX : window.innerWidth / 2;
             const clickY = e ? e.clientY : window.innerHeight / 2;
 
             const ripple = document.createElement('div');
             ripple.classList.add('click-ripple');
-            ripple.style.left = (clickX - 100) + 'px';
-            ripple.style.top = (clickY - 100) + 'px';
-            ripple.style.width = '200px';
-            ripple.style.height = '200px';
+            ripple.style.left = (clickX - 100) + 'px'; ripple.style.top = (clickY - 100) + 'px';
+            ripple.style.width = '200px'; ripple.style.height = '200px';
             document.body.appendChild(ripple);
             setTimeout(() => ripple.remove(), 4000);
 
@@ -957,16 +716,11 @@
             const introTitle = document.getElementById('intro-title');
             const introSub = document.getElementById('intro-sub');
 
-            heartBtn.style.transform = 'scale(0) rotate(180deg)';
-            heartBtn.style.opacity = '0';
-
+            heartBtn.style.transform = 'scale(0) rotate(180deg)'; heartBtn.style.opacity = '0';
             introTitle.innerHTML = "Happy Girlfriend Day Meizaa... 🥀";
             introSub.innerHTML = "BY orang asing😹✌️"
 
-            setTimeout(() => {
-                clearInterval(fwInterval);
-                nextSlide(1);
-            }, 4000);
+            setTimeout(() => { clearInterval(fwInterval); nextSlide(1); }, 4000);
         }
 
         function toggleMusic() {
@@ -982,7 +736,6 @@
             if (currentActive) {
                 currentActive.classList.remove('active');
                 currentActive.classList.add('exit');
-
                 setTimeout(() => {
                     currentActive.classList.remove('exit');
                     currentActive.style.display = 'none';
@@ -994,169 +747,93 @@
                 targetSlide.classList.add('active');
             }, 200);
 
-            // Memicu animasi ketik
-            if (index === 1 && !typeStarted1) {
-                typeStarted1 = true;
-                setTimeout(typeWriter1, 800); 
-            }
-            if (index === 3 && !typeStarted3) {
-                typeStarted3 = true;
-                setTimeout(typeWriter3, 800); 
-            }
-            if (index === 5 && !typeStarted) {
-                typeStarted = true;
-                setTimeout(typeWriter, 800); 
-            }
+            if (index === 1 && !typeStarted1) { typeStarted1 = true; setTimeout(typeWriter1, 800); }
+            if (index === 3 && !typeStarted3) { typeStarted3 = true; setTimeout(typeWriter3, 800); }
+            if (index === 5 && !typeStarted) { typeStarted = true; setTimeout(typeWriter, 800); }
         }
-/* === 5. PARTIKEL BACKGROUND === */
+
+        /* === 5. PARTIKEL BACKGROUND === */
         function createParticles() {
             const container = document.getElementById('particles-container');
             const items = ['🥀','🤍', '⭐','😹'];
             setInterval(() => {
-                const el = document.createElement('div');
-                el.classList.add('particle');
+                const el = document.createElement('div'); el.classList.add('particle');
                 el.innerText = items[Math.floor(Math.random() * items.length)];
-                el.style.left = Math.random() * 100 + 'vw';
-                el.style.fontSize = (Math.random() * 15 + 10) + 'px';
+                el.style.left = Math.random() * 100 + 'vw'; el.style.fontSize = (Math.random() * 15 + 10) + 'px';
                 el.style.animationDuration = (Math.random() * 10 + 5) + 's';
-                container.appendChild(el);
-                setTimeout(() => el.remove(), 10000);
+                container.appendChild(el); setTimeout(() => el.remove(), 10000);
             }, 1000);
         }
         createParticles();
 
         /* === 6. PENGHITUNG WAKTU BERSAMA === */
         const startDate = new Date(2024, 11, 22, 0, 0, 0).getTime();
-
         function updateCounter() {
-            const now = new Date().getTime();
-            const distance = now - startDate;
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-            document.getElementById('c-days').innerText = days;
-            document.getElementById('c-hours').innerText = hours;
-            document.getElementById('c-mins').innerText = minutes;
-            document.getElementById('c-secs').innerText = seconds;
+            const now = new Date().getTime(); const distance = now - startDate;
+            document.getElementById('c-days').innerText = Math.floor(distance / (1000 * 60 * 60 * 24));
+            document.getElementById('c-hours').innerText = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            document.getElementById('c-mins').innerText = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            document.getElementById('c-secs').innerText = Math.floor((distance % (1000 * 60)) / 1000);
         }
         setInterval(updateCounter, 1000);
 
-        /* === 7. EFEK KETIK (Typewriter Multi-Slide) === */
-        // Typewriter Slide 1
+        /* === 7. EFEK KETIK === */
         const textSlide1 = "Sebenernya aku gabut dari kemarin, nah terus denger denger dari tiktod katanya ada hari gf tanggal 1 agus, nah alhasil yaudah dehh aku niat bikin giniann buat kamuu walaupun kitaa cuma sekedarr temann, maaf kalauu cara aku kayak ginii, sekaliann buat kenang kenangann";
         const typeEl1 = document.getElementById('type-text-1');
         let i1 = 0; let typeStarted1 = false;
-
         function typeWriter1() {
-            if (i1 < textSlide1.length) {
-                typeEl1.innerHTML += textSlide1.charAt(i1);
-                i1++;
-                setTimeout(typeWriter1, 40); 
-            }
+            if (i1 < textSlide1.length) { typeEl1.innerHTML += textSlide1.charAt(i1); i1++; setTimeout(typeWriter1, 40); }
         }
 
-        // Typewriter Slide 3
         const textSlide3 = "Akuu senengg bisaa kenall sama kamuu makasihh udahh temenin selema inii walaupunn sekarangg kitaaa udahh gaa barengg lagiii tapii yangg kamuu lakukann ituu benerrr. tetep fokuss samaa wawasan kamuu jangann mikirinn akuu yaaaa mungkinn kalau soall kamuu balik ke akuu lagii ituu hak kamuu mau apaa engga nyaaa, kalauu akuu engga maksaa dan akuu gamau kamuu terpaksaa. jangann lupain akuu ya kalau udah dapet yang lainn😊";
         const typeEl3 = document.getElementById('type-text-3');
         let i3 = 0; let typeStarted3 = false;
-
         function typeWriter3() {
-            if (i3 < textSlide3.length) {
-                typeEl3.innerHTML += textSlide3.charAt(i3);
-                i3++;
-                setTimeout(typeWriter3, 40); 
-            }
+            if (i3 < textSlide3.length) { typeEl3.innerHTML += textSlide3.charAt(i3); i3++; setTimeout(typeWriter3, 40); }
         }
 
-        // Typewriter Slide 5
-        const messageText = "ohh iyaa maapinn kalauu adaa salahh. maapp kalau sifat aku kayaa marahh ke kamuu.karena masih gamau kehilangan kamu. tapi akuu udahh sadarr akuu gaboleh maksa kamuu kembali ke akuu. sekarang kamuu boleh ngelakuin apa yang kamuu mau lakuinn kamuu bolehh milikk cowo lainn karena akuu bukan milik kamu lagi. btw jangann lupain akuu. aku jugaa bakalan rehat dari kegiatan ga guna, aku mau ngelakuin kegiatan baruu yang bermanfaat, jadii see u next time, jagaa diri kamuu yaa jangan lupain akuu, kalau adaa masalahh ceritaa ajaa gausahh takutt"
+        const messageText = "ohh iyaa maapinn kalauu adaa salahh. maapp kalau sifat aku kayaa marahh ke kamuu.karena masih gamau kehilangan kamu. tapi akuu udahh sadarr akuu gaboleh maksa kamuu kembali ke akuu. sekarang kamuu boleh ngelakuin apa yang kamuu mau lakuinn kamuu bolehh milikk cowo lainn karena akuu bukan milik kamu lagi. btw jangann lupain akuu. aku jugaa bakalan rehat dari kegiatan ga guna, aku mau ngelakuin kegiatan baruu yang bermanfaat, jadii see u next time, jagaa diri kamuu yaa jangan lupain akuu, kalau adaa masalahh ceritaa ajaa gausahh takutt";
         const typeEl = document.getElementById('type-text');
         let i = 0; let typeStarted = false;
-
         function typeWriter() {
-            if (i < messageText.length) {
-                typeEl.innerHTML += messageText.charAt(i);
-                i++;
-                setTimeout(typeWriter, 40); 
-            }
+            if (i < messageText.length) { typeEl.innerHTML += messageText.charAt(i); i++; setTimeout(typeWriter, 40); }
         }
 
         /* === 8. ROTASI ALASAN === */
-        const reasons = [
-            "Fokuss samaa tujuan kamuu",
-            "kalo sekokahh jangan cape capee",
-            "Utamainn ibadahh mekk, biar urusann lancarr",
-            
-        ];
+        const reasons = ["Fokuss samaa tujuan kamuu", "kalo sekokahh jangan cape capee", "Utamainn ibadahh mekk, biar urusann lancarr"];
         let rIndex = 0; const reasonEl = document.getElementById('reason-text');
-        
         setInterval(() => {
             reasonEl.style.opacity = 0;
-            setTimeout(() => {
-                rIndex = (rIndex + 1) % reasons.length;
-                reasonEl.innerText = `"${reasons[rIndex]}"`;
-                reasonEl.style.opacity = 1;
-            }, 500);
+            setTimeout(() => { rIndex = (rIndex + 1) % reasons.length; reasonEl.innerText = `"${reasons[rIndex]}"`; reasonEl.style.opacity = 1; }, 500);
         }, 4000); 
 
         /* === 9. ROTASI QUOTES BAWAH === */
-        const quotes = [
-            "",
-            "",
-            ""
-        ];
+        const quotes = ["", "", ""];
         let qIndex = 0; const quoteEl = document.getElementById('footer-quote');
-        
         setInterval(() => {
             quoteEl.style.opacity = 0;
-            setTimeout(() => {
-                qIndex = (qIndex + 1) % quotes.length;
-                quoteEl.innerText = `"${quotes[qIndex]}"`;
-                quoteEl.style.opacity = 1;
-            }, 500);
+            setTimeout(() => { qIndex = (qIndex + 1) % quotes.length; quoteEl.innerText = `"${quotes[qIndex]}"`; quoteEl.style.opacity = 1; }, 500);
         }, 5000);
       
-      /* === 10. KONTROL MODAL, AUTOPLAY VIDEO & PAUSE MUSIK === */
-const secretModal = document.getElementById('secretModal');
-const popupVideo = document.getElementById('popupVideo');
-function openModal(e) {
-    secretModal.classList.add('active');
-
-    // Hentikan musik latar
-    if (bgMusic) {
-        bgMusic.pause();
-        isPlaying = false;
-        if (musicBtn) musicBtn.innerHTML = '🎵 Putar Musik';
-    }
-
-    // Putar video dengan aman
-    if (popupVideo) {
-        popupVideo.currentTime = 0;
-        let playPromise = popupVideo.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(error => {
-                console.log("Autoplay ditahan oleh browser, pengguna perlu menekan tombol play:", error);
-            });
+        /* === 10. KONTROL MODAL === */
+        const secretModal = document.getElementById('secretModal');
+        const popupVideo = document.getElementById('popupVideo');
+        
+        function openModal(e) {
+            secretModal.classList.add('active');
+            if (bgMusic) { bgMusic.pause(); isPlaying = false; if (musicBtn) musicBtn.innerHTML = '🎵 Putar Musik'; }
+            if (popupVideo) {
+                popupVideo.currentTime = 0;
+                let playPromise = popupVideo.play();
+                if (playPromise !== undefined) { playPromise.catch(error => { console.log(error); }); }
+            }
         }
-    }
-}
 
-function closeModal() {
-    secretModal.classList.remove('active');
-
-    if (popupVideo) {
-        popupVideo.pause();
-    }
-
-    // Lanjutkan musik latar
-    if (bgMusic) {
-        bgMusic.play().catch(e => console.log(e));
-        isPlaying = true;
-        if (musicBtn) musicBtn.innerHTML = '⏸️ Jeda Musik';
-    }
-}
-
+        function closeModal() {
+            secretModal.classList.remove('active');
+            if (popupVideo) { popupVideo.pause(); }
+            if (bgMusic) { bgMusic.play().catch(e => console.log(e)); isPlaying = true; if (musicBtn) musicBtn.innerHTML = '⏸️ Jeda Musik'; }
+        }
     </script>
 </body>
 </html>
