@@ -1,4 +1,4 @@
-const API_BASE = '/.netlify/functions/will-movies';
+const API_BASE = '/api/will-movies';
 
 const movieContainer = document.getElementById('movie-container');
 const searchInput = document.getElementById('search-input');
