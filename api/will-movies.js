@@ -1,10 +1,9 @@
 const axios = require('axios');
 
-// Menggunakan TMDB API (Gratis, Resmi, & Otomatis Memfilter Konten Dewasa)
-const TMDB_API_KEY = process.env.TMDB_API_KEY || '15d2ea6d0dc1d476efbca3ecc92bfe30'; 
-const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
-const IMAGE_BASE_URL = 'https://image.tmdb.org/t/p/w500';
+const OMDB_API_KEY = '32ec55d1';
+const OMDB_BASE_URL = 'https://www.omdbapi.com/';
 
+// Helper Format Respons
 function formatResponse(status, code, dataOrMessage) {
   const isSuccess = status === 'success';
   return {
@@ -15,104 +14,78 @@ function formatResponse(status, code, dataOrMessage) {
   };
 }
 
-// Daftar pemutar video streaming berdasarkan TMDB ID
-function getStreamServers(tmdbId) {
-  return [
-    { server: 'Server 1 (VidSrc)', embed: `https://vidsrc.to/embed/movie/${tmdbId}` },
-    { server: 'Server 2 (Autoembed)', embed: `https://player.autoembed.cc/embed/movie/${tmdbId}` },
-    { server: 'Server 3 (Embed.su)', embed: `https://embed.su/embed/movie/${tmdbId}` },
-    { server: 'Server 4 (VidLink)', embed: `https://vidlink.pro/movie/${tmdbId}` },
-    { server: 'Server 5 (2Embed)', embed: `https://www.2embed.cc/embed/${tmdbId}` }
-  ];
-}
-
-// 1. Endpoint Home (Film Populer & Bebas Dewasa)
-async function getHome() {
+// 1. Ambil daftar film dari OMDb
+async function getMoviesByKeyword(keyword) {
   try {
-    const url = `${TMDB_BASE_URL}/trending/movie/week?api_key=${TMDB_API_KEY}&include_adult=false`;
-    const { data } = await axios.get(url);
-    const movies = data.results.map(m => ({
-      title: m.title || m.original_title,
-      thumbnail: m.poster_path ? `${IMAGE_BASE_URL}${m.poster_path}` : 'https://via.placeholder.com/300x450?text=No+Image',
-      slug: m.id.toString(),
-      rating: m.vote_average ? m.vote_average.toFixed(1) : 'N/A'
-    }));
-    return formatResponse('success', 200, movies);
-  } catch (error) {
-    return formatResponse('error', 500, error.message);
+    const res = await axios.get(`${OMDB_BASE_URL}?s=${encodeURIComponent(keyword)}&type=movie&apikey=${OMDB_API_KEY}`);
+    if (res.data.Response === 'True') {
+      return res.data.Search.map(item => ({
+        title: item.Title,
+        thumbnail: item.Poster !== 'N/A' ? item.Poster : 'https://via.placeholder.com/300x450?text=No+Poster',
+        url: `https://www.imdb.com/title/${item.imdbID}/`,
+        slug: item.imdbID
+      }));
+    }
+    return [];
+  } catch (err) {
+    return [];
   }
 }
 
-// 2. Endpoint Best Rating
-async function getBestRating() {
+// 2. Detail Film & Server Pemutar Video (Embed IMDb ID)
+async function getMovieDetails(imdbID) {
   try {
-    const url = `${TMDB_BASE_URL}/movie/top_rated?api_key=${TMDB_API_KEY}&include_adult=false`;
-    const { data } = await axios.get(url);
-    const movies = data.results.map(m => ({
-      title: m.title || m.original_title,
-      thumbnail: m.poster_path ? `${IMAGE_BASE_URL}${m.poster_path}` : 'https://via.placeholder.com/300x450?text=No+Image',
-      slug: m.id.toString(),
-      rating: m.vote_average ? m.vote_average.toFixed(1) : 'N/A'
-    }));
-    return formatResponse('success', 200, movies);
-  } catch (error) {
-    return formatResponse('error', 500, error.message);
-  }
-}
+    const res = await axios.get(`${OMDB_BASE_URL}?i=${imdbID}&plot=full&apikey=${OMDB_API_KEY}`);
+    const data = res.data;
 
-// 3. Endpoint Search
-async function searchMovies(query) {
-  try {
-    const url = `${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&query=${encodeURIComponent(query)}&include_adult=false`;
-    const { data } = await axios.get(url);
-    const movies = data.results.map(m => ({
-      title: m.title || m.original_title,
-      thumbnail: m.poster_path ? `${IMAGE_BASE_URL}${m.poster_path}` : 'https://via.placeholder.com/300x450?text=No+Image',
-      slug: m.id.toString(),
-      rating: m.vote_average ? m.vote_average.toFixed(1) : 'N/A'
-    }));
-    return formatResponse('success', 200, movies);
-  } catch (error) {
-    return formatResponse('error', 500, error.message);
-  }
-}
+    if (data.Response === 'False') {
+      return formatResponse('error', 404, 'Film tidak ditemukan');
+    }
 
-// 4. Endpoint Detail & Pemutar Video
-async function getMovieDetails(id) {
-  try {
-    const url = `${TMDB_BASE_URL}/movie/${id}?api_key=${TMDB_API_KEY}`;
-    const { data } = await axios.get(url);
+    // Pemutar video otomatis menggunakan IMDb ID
+    const serverPlayer = [
+      { server: 'Server Utama', embed: `https://vidsrc.to/embed/movie/${imdbID}` },
+      { server: 'Server Cadangan 1', embed: `https://www.2embed.cc/embed/${imdbID}` },
+      { server: 'Server Cadangan 2', embed: `https://autoembed.co/movie/imdb/${imdbID}` }
+    ];
+
     return formatResponse('success', 200, {
-      title: data.title || data.original_title,
-      thumbnail: data.poster_path ? `${IMAGE_BASE_URL}${data.poster_path}` : '',
-      description: data.overview || '',
-      rating: data.vote_average ? data.vote_average.toFixed(1) : 'N/A',
-      tmdbId: data.id,
-      serverPlayer: getStreamServers(data.id)
+      title: `${data.Title} (${data.Year})`,
+      thumbnail: data.Poster !== 'N/A' ? data.Poster : 'https://via.placeholder.com/300x450?text=No+Poster',
+      description: data.Plot !== 'N/A' ? data.Plot : 'Tidak ada deskripsi.',
+      rating: data.imdbRating !== 'N/A' ? data.imdbRating : 'N/A',
+      serverPlayer
     });
-  } catch (error) {
-    return formatResponse('error', 500, error.message);
+  } catch (err) {
+    return formatResponse('error', 500, err.message);
   }
 }
 
-// Handler Vercel / Netlify Serverless Function
+// Handler Vercel Serverless Function
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  const { action, query, q, keyword, slug, id } = req.query || {};
-  const searchKeyword = query || q || keyword;
-  const movieId = slug || id;
-
+  const { action, query, slug } = req.query || {};
   let result;
 
-  if (action === 'search' || searchKeyword) {
-    result = await searchMovies(searchKeyword);
-  } else if (action === 'detail' || (movieId && action !== 'home')) {
-    result = await getMovieDetails(movieId);
-  } else if (action === 'top-rated' || action === 'rating') {
-    result = await getBestRating();
+  if (action === 'home') {
+    // Menampilkan kumpulan film populer di halaman utama
+    const movies = await getMoviesByKeyword('Avengers');
+    result = formatResponse('success', 200, movies);
+  } else if (action === 'rating') {
+    // Menampilkan daftar film populer pilihan
+    const movies = await getMoviesByKeyword('Batman');
+    result = formatResponse('success', 200, movies);
+  } else if (action === 'search' && query) {
+    // Pencarian film berdasarkan kata kunci dari input user
+    const movies = await getMoviesByKeyword(query);
+    result = formatResponse('success', 200, movies);
+  } else if (slug) {
+    // Ambil detail film & link streaming berdasarkan IMDb ID
+    result = await getMovieDetails(slug);
   } else {
-    result = await getHome(); // Untuk popular, latest, dan home
+    const movies = await getMoviesByKeyword('Spider-Man');
+    result = formatResponse('success', 200, movies);
   }
 
   return res.status(result.code || 200).json(result);
