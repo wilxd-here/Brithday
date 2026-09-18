@@ -1,0 +1,20 @@
+{
+  "name": "willmovies",
+  "version": "1.0.0",
+  "description": "Platform streaming film willMovies",
+  "main": "app.js",
+  "scripts": {
+    "start": "node api/will-movies.js"
+  },
+  "keywords": [
+    "willmovies",
+    "streaming",
+    "movies"
+  ],
+  "author": "willMovies",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "cheerio": "^1.0.0-rc.12"
+  }
+}
