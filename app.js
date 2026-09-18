@@ -1,4 +1,6 @@
-const API_BASE = '/api/will-movies';
+const TMDB_KEY = '15d2aea6733f7d6325bf14266b6c3ff6';
+const TMDB_BASE = 'https://api.themoviedb.org/3';
+const IMG_BASE = 'https://image.tmdb.org/t/p/w500';
 
 const movieContainer = document.getElementById('movie-container');
 const searchInput = document.getElementById('search-input');
@@ -11,13 +13,13 @@ const modalTitle = document.getElementById('modal-movie-title');
 const playerIframe = document.getElementById('player-iframe');
 const serverList = document.getElementById('server-list');
 
-// Helper Ambil Data
-async function fetchAPI(params) {
+// Helper Fetch Data TMDB
+async function fetchTMDB(endpoint, params = {}) {
   try {
-    const queryStr = new URLSearchParams(params).toString();
-    const res = await fetch(`${API_BASE}?${queryStr}`);
-    const json = await res.json();
-    return json.status === 'success' ? json.data : [];
+    const query = new URLSearchParams({ api_key: TMDB_KEY, language: 'id-ID', ...params }).toString();
+    const res = await fetch(`${TMDB_BASE}${endpoint}?${query}`);
+    const data = await res.json();
+    return data.results || [];
   } catch (err) {
     console.error('Gagal mengambil data:', err);
     return [];
@@ -35,36 +37,39 @@ function renderMovies(movies) {
   movies.forEach(movie => {
     const card = document.createElement('div');
     card.className = 'movie-card';
+    const poster = movie.poster_path ? `${IMG_BASE}${movie.poster_path}` : 'https://via.placeholder.com/300x450?text=No+Poster';
+    const title = movie.title || movie.name || 'Tanpa Judul';
+
     card.innerHTML = `
       <div class="poster-wrapper">
-        <img src="${movie.thumbnail || 'https://via.placeholder.com/300x450?text=No+Image'}" alt="${movie.title}" loading="lazy">
+        <img src="${poster}" alt="${title}" loading="lazy">
       </div>
       <div class="card-info">
-        <div class="card-title" title="${movie.title}">${movie.title}</div>
+        <div class="card-title" title="${title}">${title}</div>
       </div>
     `;
-    card.addEventListener('click', () => openMovieDetail(movie.slug));
+    card.addEventListener('click', () => openMovieDetail(movie.id, title));
     movieContainer.appendChild(card);
   });
 }
 
-// Load Home
+// Load Home (Film Terbaru / Sedang Tayang)
 async function loadHome() {
   sectionHeading.textContent = 'Film Terbaru';
   movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #94a3b8;">Memuat film...</p>';
-  const movies = await fetchAPI({ action: 'home' });
+  const movies = await fetchTMDB('/movie/now_playing');
   renderMovies(movies);
 }
 
-// Load Rating
+// Load Rating Terbaik
 async function loadRating() {
   sectionHeading.textContent = 'Rating Terbaik';
   movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #94a3b8;">Memuat film...</p>';
-  const movies = await fetchAPI({ action: 'rating' });
+  const movies = await fetchTMDB('/movie/top_rated');
   renderMovies(movies);
 }
 
-// Fitur Search
+// Fitur Search (Pencarian Otomatis)
 let searchTimer;
 searchInput.addEventListener('input', (e) => {
   clearTimeout(searchTimer);
@@ -78,9 +83,9 @@ searchInput.addEventListener('input', (e) => {
   searchTimer = setTimeout(async () => {
     sectionHeading.textContent = `Hasil Pencarian: "${query}"`;
     movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #94a3b8;">Mencari film...</p>';
-    const movies = await fetchAPI({ action: 'search', query });
+    const movies = await fetchTMDB('/search/movie', { query });
     renderMovies(movies);
-  }, 500);
+  }, 400);
 });
 
 // Fitur Navigasi Filter
@@ -97,33 +102,32 @@ filterBtns.forEach(btn => {
 });
 
 // Detail Film & Player Streaming Modal
-async function openMovieDetail(slug) {
-  modalTitle.textContent = 'Memuat Pemutar...';
+function openMovieDetail(tmdbId, title) {
+  modalTitle.textContent = title || 'Nonton Film';
   playerIframe.src = '';
   serverList.innerHTML = '';
   modal.classList.add('active');
 
-  const detail = await fetchAPI({ slug });
+  const servers = [
+    { name: 'Server Utama', embed: `https://vidsrc.cc/v2/embed/movie/${tmdbId}` },
+    { name: 'Server Cadangan 1', embed: `https://vidlink.pro/movie/${tmdbId}` },
+    { name: 'Server Cadangan 2', embed: `https://embed.su/embed/movie/${tmdbId}` },
+    { name: 'Server Cadangan 3', embed: `https://2embed.cc/embed/${tmdbId}` }
+  ];
 
-  if (detail && detail.serverPlayer && detail.serverPlayer.length > 0) {
-    modalTitle.textContent = detail.title || 'Nonton Film';
-    
-    detail.serverPlayer.forEach((srv, index) => {
-      const btn = document.createElement('button');
-      btn.className = `server-btn ${index === 0 ? 'active' : ''}`;
-      btn.textContent = srv.server;
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        playerIframe.src = srv.embed;
-      });
-      serverList.appendChild(btn);
+  servers.forEach((srv, index) => {
+    const btn = document.createElement('button');
+    btn.className = `server-btn ${index === 0 ? 'active' : ''}`;
+    btn.textContent = srv.name;
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.server-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      playerIframe.src = srv.embed;
     });
+    serverList.appendChild(btn);
+  });
 
-    playerIframe.src = detail.serverPlayer[0].embed;
-  } else {
-    modalTitle.textContent = 'Video Tidak Tersedia';
-  }
+  playerIframe.src = servers[0].embed;
 }
 
 // Tutup Modal
