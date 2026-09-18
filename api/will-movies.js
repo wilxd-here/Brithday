@@ -1,9 +1,11 @@
-const axios = require('axios');
+const axios = require('axios'); // Membutuhkan axios yang sudah ada di package.json
 
-const OMDB_API_KEY = '32ec55d1';
-const OMDB_BASE_URL = 'https://www.omdbapi.com/';
+// Mengambil API Key dari Environment Variable Vercel
+const TMDB_API_KEY = process.env.TMDB_API_KEY;
+const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const TMDB_IMG_BASE = 'https://image.tmdb.org/t/p/w500';
 
-// Helper Format Respons
+// Helper: Format respons JSON agar cocok dengan app.js
 function formatResponse(status, code, dataOrMessage) {
   const isSuccess = status === 'success';
   return {
@@ -14,79 +16,77 @@ function formatResponse(status, code, dataOrMessage) {
   };
 }
 
-// 1. Ambil daftar film dari OMDb
-async function getMoviesByKeyword(keyword) {
-  try {
-    const res = await axios.get(`${OMDB_BASE_URL}?s=${encodeURIComponent(keyword)}&type=movie&apikey=${OMDB_API_KEY}`);
-    if (res.data.Response === 'True') {
-      return res.data.Search.map(item => ({
-        title: item.Title,
-        thumbnail: item.Poster !== 'N/A' ? item.Poster : 'https://via.placeholder.com/300x450?text=No+Poster',
-        url: `https://www.imdb.com/title/${item.imdbID}/`,
-        slug: item.imdbID
-      }));
-    }
-    return [];
-  } catch (err) {
-    return [];
-  }
-}
-
-// 2. Detail Film & Server Pemutar Video (Embed IMDb ID)
-async function getMovieDetails(imdbID) {
-  try {
-    const res = await axios.get(`${OMDB_BASE_URL}?i=${imdbID}&plot=full&apikey=${OMDB_API_KEY}`);
-    const data = res.data;
-
-    if (data.Response === 'False') {
-      return formatResponse('error', 404, 'Film tidak ditemukan');
-    }
-
-    // Pemutar video otomatis menggunakan IMDb ID
-    const serverPlayer = [
-      { server: 'Server Utama', embed: `https://vidsrc.to/embed/movie/${imdbID}` },
-      { server: 'Server Cadangan 1', embed: `https://www.2embed.cc/embed/${imdbID}` },
-      { server: 'Server Cadangan 2', embed: `https://autoembed.co/movie/imdb/${imdbID}` }
-    ];
-
-    return formatResponse('success', 200, {
-      title: `${data.Title} (${data.Year})`,
-      thumbnail: data.Poster !== 'N/A' ? data.Poster : 'https://via.placeholder.com/300x450?text=No+Poster',
-      description: data.Plot !== 'N/A' ? data.Plot : 'Tidak ada deskripsi.',
-      rating: data.imdbRating !== 'N/A' ? data.imdbRating : 'N/A',
-      serverPlayer
-    });
-  } catch (err) {
-    return formatResponse('error', 500, err.message);
-  }
+// Helper: Ubah format data TMDB agar sesuai dengan struktur yang dibaca frontend
+function mapMovies(results) {
+  return results.map(movie => ({
+    title: movie.title,
+    thumbnail: movie.poster_path ? `${TMDB_IMG_BASE}${movie.poster_path}` : 'https://via.placeholder.com/300x450?text=No+Image',
+    slug: movie.id.toString() // Menggunakan ID TMDB sebagai slug untuk mengambil detail nanti
+  }));
 }
 
 // Handler Vercel Serverless Function
 module.exports = async (req, res) => {
+  // Izinkan akses CORS
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  const { action, query, slug } = req.query || {};
-  let result;
+  const { action, query, slug, page = 1 } = req.query || {};
 
-  if (action === 'home') {
-    // Menampilkan kumpulan film populer di halaman utama
-    const movies = await getMoviesByKeyword('Avengers');
-    result = formatResponse('success', 200, movies);
-  } else if (action === 'rating') {
-    // Menampilkan daftar film populer pilihan
-    const movies = await getMoviesByKeyword('Batman');
-    result = formatResponse('success', 200, movies);
-  } else if (action === 'search' && query) {
-    // Pencarian film berdasarkan kata kunci dari input user
-    const movies = await getMoviesByKeyword(query);
-    result = formatResponse('success', 200, movies);
-  } else if (slug) {
-    // Ambil detail film & link streaming berdasarkan IMDb ID
-    result = await getMovieDetails(slug);
-  } else {
-    const movies = await getMoviesByKeyword('Spider-Man');
-    result = formatResponse('success', 200, movies);
+  // Cek apakah API Key sudah dipasang di Vercel
+  if (!TMDB_API_KEY) {
+    return res.status(500).json(formatResponse('error', 500, 'TMDB API Key belum diatur di Vercel!'));
   }
 
-  return res.status(result.code || 200).json(result);
+  try {
+    // 1. Endpoint Home (Film Populer)
+    if (action === 'home') {
+      const { data } = await axios.get(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=id-ID&page=${page}`);
+      return res.json(formatResponse('success', 200, mapMovies(data.results)));
+    } 
+    
+    // 2. Endpoint Rating Terbaik (Top Rated)
+    else if (action === 'rating') {
+      const { data } = await axios.get(`${TMDB_BASE_URL}/movie/top_rated?api_key=${TMDB_API_KEY}&language=id-ID&page=${page}`);
+      return res.json(formatResponse('success', 200, mapMovies(data.results)));
+    } 
+    
+    // 3. Endpoint Search (Pencarian Film)
+    else if (action === 'search' && query) {
+      const { data } = await axios.get(`${TMDB_BASE_URL}/search/movie?api_key=${TMDB_API_KEY}&language=id-ID&query=${encodeURIComponent(query)}&page=${page}`);
+      return res.json(formatResponse('success', 200, mapMovies(data.results)));
+    } 
+    
+    // 4. Endpoint Detail & Stream Server
+    else if (slug) {
+      // Ambil detail film dari TMDB berdasarkan ID (slug)
+      const { data } = await axios.get(`${TMDB_BASE_URL}/movie/${slug}?api_key=${TMDB_API_KEY}&language=id-ID`);
+      
+      // Karena TMDB tidak menyediakan video film, kita generate iframe dari penyedia embed pihak ketiga
+      const tmdbId = data.id;
+      const serverPlayer = [
+        { server: 'VidSrc', embed: `https://vidsrc.me/embed/movie?tmdb=${tmdbId}` },
+        { server: 'SuperEmbed', embed: `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1` },
+        { server: '2Embed', embed: `https://www.2embed.cc/embed/${tmdbId}` }
+      ];
+
+      // Format detail agar sesuai dengan yang diminta app.js
+      return res.json(formatResponse('success', 200, {
+        title: data.title,
+        thumbnail: data.poster_path ? `${TMDB_IMG_BASE}${data.poster_path}` : '',
+        description: data.overview,
+        rating: data.vote_average,
+        serverPlayer
+      }));
+    } 
+    
+    // Fallback default
+    else {
+      const { data } = await axios.get(`${TMDB_BASE_URL}/movie/popular?api_key=${TMDB_API_KEY}&language=id-ID&page=1`);
+      return res.json(formatResponse('success', 200, mapMovies(data.results)));
+    }
+
+  } catch (error) {
+    console.error(error.response?.data || error.message);
+    return res.status(500).json(formatResponse('error', 500, 'Gagal mengambil data dari server TMDB.'));
+  }
 };
