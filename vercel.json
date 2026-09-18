@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/will-movies",
+      "destination": "/api/will-movies.js"
+    }
+  ]
+}
