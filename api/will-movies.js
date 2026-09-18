@@ -95,23 +95,24 @@ async function getMovieDetails(id) {
   }
 }
 
-// Handler Vercel Serverless Function
+// Handler Vercel / Netlify Serverless Function
 module.exports = async (req, res) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
 
-  const { action, query, slug } = req.query || {};
+  const { action, query, q, keyword, slug, id } = req.query || {};
+  const searchKeyword = query || q || keyword;
+  const movieId = slug || id;
+
   let result;
 
-  if (action === 'home') {
-    result = await getHome();
-  } else if (action === 'rating') {
+  if (action === 'search' || searchKeyword) {
+    result = await searchMovies(searchKeyword);
+  } else if (action === 'detail' || (movieId && action !== 'home')) {
+    result = await getMovieDetails(movieId);
+  } else if (action === 'top-rated' || action === 'rating') {
     result = await getBestRating();
-  } else if (action === 'search' && query) {
-    result = await searchMovies(query);
-  } else if (slug) {
-    result = await getMovieDetails(slug);
   } else {
-    result = await getHome();
+    result = await getHome(); // Untuk popular, latest, dan home
   }
 
   return res.status(result.code || 200).json(result);
