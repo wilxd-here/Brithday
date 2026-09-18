@@ -1,6 +1,6 @@
-const TMDB_KEY = '15d2aea6733f7d6325bf14266b6c3ff6';
-const TMDB_BASE = 'https://api.themoviedb.org/3';
-const IMG_BASE = 'https://image.tmdb.org/t/p/w500';
+// Masukkan API Key OMDb kamu di sini
+const OMDB_KEY = '32ec55d1'; // Ganti dengan key dari email kamu jika beda
+const OMDB_BASE = 'https://www.omdbapi.com/';
 
 const movieContainer = document.getElementById('movie-container');
 const searchInput = document.getElementById('search-input');
@@ -13,63 +13,68 @@ const modalTitle = document.getElementById('modal-movie-title');
 const playerIframe = document.getElementById('player-iframe');
 const serverList = document.getElementById('server-list');
 
-// Helper Fetch Data TMDB
-async function fetchTMDB(endpoint, params = {}) {
+// Helper Fetch OMDb API
+async function fetchOMDb(params = {}) {
   try {
-    const query = new URLSearchParams({ api_key: TMDB_KEY, language: 'id-ID', ...params }).toString();
-    const res = await fetch(`${TMDB_BASE}${endpoint}?${query}`);
+    const queryStr = new URLSearchParams({ apikey: OMDB_KEY, type: 'movie', ...params }).toString();
+    const res = await fetch(`${OMDB_BASE}?${queryStr}`);
     const data = await res.json();
-    return data.results || [];
+    
+    if (data.Response === 'True') {
+      return data.Search || data;
+    } else {
+      console.error('OMDb Error:', data.Error);
+      return null;
+    }
   } catch (err) {
-    console.error('Gagal mengambil data:', err);
-    return [];
+    console.error('Gagal mengambil data OMDb:', err);
+    return null;
   }
 }
 
 // Render Kartu Film
 function renderMovies(movies) {
   movieContainer.innerHTML = '';
-  if (!movies || movies.length === 0) {
-    movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #94a3b8;">Film tidak ditemukan.</p>';
+  if (!movies || !Array.isArray(movies) || movies.length === 0) {
+    movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #94a3b8;">Film tidak ditemukan. Pastikan API Key OMDb sudah diaktivasi via email.</p>';
     return;
   }
 
   movies.forEach(movie => {
     const card = document.createElement('div');
     card.className = 'movie-card';
-    const poster = movie.poster_path ? `${IMG_BASE}${movie.poster_path}` : 'https://via.placeholder.com/300x450?text=No+Poster';
-    const title = movie.title || movie.name || 'Tanpa Judul';
+    const poster = (movie.Poster && movie.Poster !== 'N/A') ? movie.Poster : 'https://via.placeholder.com/300x450?text=No+Poster';
 
     card.innerHTML = `
       <div class="poster-wrapper">
-        <img src="${poster}" alt="${title}" loading="lazy">
+        <img src="${poster}" alt="${movie.Title}" loading="lazy">
       </div>
       <div class="card-info">
-        <div class="card-title" title="${title}">${title}</div>
+        <div class="card-title" title="${movie.Title}">${movie.Title} (${movie.Year})</div>
       </div>
     `;
-    card.addEventListener('click', () => openMovieDetail(movie.id, title));
+    card.addEventListener('click', () => openMovieDetail(movie.imdbID, movie.Title));
     movieContainer.appendChild(card);
   });
 }
 
-// Load Home (Film Terbaru / Sedang Tayang)
+// Load Home (Tampilkan rekomendasi)
 async function loadHome() {
-  sectionHeading.textContent = 'Film Terbaru';
+  sectionHeading.textContent = 'Film Populer';
   movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #94a3b8;">Memuat film...</p>';
-  const movies = await fetchTMDB('/movie/now_playing');
+  const movies = await fetchOMDb({ s: 'Avengers' });
   renderMovies(movies);
 }
 
-// Load Rating Terbaik
+// Load Rating
 async function loadRating() {
   sectionHeading.textContent = 'Rating Terbaik';
   movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #94a3b8;">Memuat film...</p>';
-  const movies = await fetchTMDB('/movie/top_rated');
+  const movies = await fetchOMDb({ s: 'Batman' });
   renderMovies(movies);
 }
 
-// Fitur Search (Pencarian Otomatis)
+// Fitur Search
 let searchTimer;
 searchInput.addEventListener('input', (e) => {
   clearTimeout(searchTimer);
@@ -83,12 +88,12 @@ searchInput.addEventListener('input', (e) => {
   searchTimer = setTimeout(async () => {
     sectionHeading.textContent = `Hasil Pencarian: "${query}"`;
     movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #94a3b8;">Mencari film...</p>';
-    const movies = await fetchTMDB('/search/movie', { query });
+    const movies = await fetchOMDb({ s: query });
     renderMovies(movies);
-  }, 400);
+  }, 500);
 });
 
-// Fitur Navigasi Filter
+// Fitur Filter
 filterBtns.forEach(btn => {
   btn.addEventListener('click', () => {
     filterBtns.forEach(b => b.classList.remove('active'));
@@ -101,18 +106,17 @@ filterBtns.forEach(btn => {
   });
 });
 
-// Detail Film & Player Streaming Modal
-function openMovieDetail(tmdbId, title) {
+// Modal Pemutar Video (Menggunakan IMDb ID)
+function openMovieDetail(imdbID, title) {
   modalTitle.textContent = title || 'Nonton Film';
   playerIframe.src = '';
   serverList.innerHTML = '';
   modal.classList.add('active');
 
   const servers = [
-    { name: 'Server Utama', embed: `https://vidsrc.cc/v2/embed/movie/${tmdbId}` },
-    { name: 'Server Cadangan 1', embed: `https://vidlink.pro/movie/${tmdbId}` },
-    { name: 'Server Cadangan 2', embed: `https://embed.su/embed/movie/${tmdbId}` },
-    { name: 'Server Cadangan 3', embed: `https://2embed.cc/embed/${tmdbId}` }
+    { name: 'Server 1 (VidSrc)', embed: `https://vidsrc.to/embed/movie/${imdbID}` },
+    { name: 'Server 2 (2Embed)', embed: `https://www.2embed.cc/embed/${imdbID}` },
+    { name: 'Server 3 (Autoembed)', embed: `https://player.autoembed.cc/embed/movie/${imdbID}` }
   ];
 
   servers.forEach((srv, index) => {
@@ -143,5 +147,5 @@ window.addEventListener('click', (e) => {
   }
 });
 
-// Inisialisasi awal
+// Jalankan saat halaman dibuka
 loadHome();
