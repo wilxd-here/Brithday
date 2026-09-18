@@ -141,3 +141,13 @@ window.addEventListener('click', (e) => {
 
 // Inisialisasi awal
 loadHome();
+// Daftar pilihan server streaming berbasis TMDB ID
+function getStreamServers(tmdbId) {
+  return [
+    { server: 'Server 1 (VidSrc)', embed: `https://vidsrc.to/embed/movie/${tmdbId}` },
+    { server: 'Server 2 (Autoembed)', embed: `https://player.autoembed.cc/embed/movie/${tmdbId}` },
+    { server: 'Server 3 (Embed.su)', embed: `https://embed.su/embed/movie/${tmdbId}` },
+    { server: 'Server 4 (VidLink)', embed: `https://vidlink.pro/movie/${tmdbId}` },
+    { server: 'Server 5 (2Embed)', embed: `https://www.2embed.cc/embed/${tmdbId}` }
+  ];
+}
