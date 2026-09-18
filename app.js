@@ -1,3 +1,5 @@
+const API_BASE = '/api/will-movies';
+
 const movieContainer = document.getElementById('movie-container');
 const searchInput = document.getElementById('search-input');
 const filterBtns = document.querySelectorAll('.filter-btn');
@@ -9,51 +11,13 @@ const modalTitle = document.getElementById('modal-movie-title');
 const playerIframe = document.getElementById('player-iframe');
 const serverList = document.getElementById('server-list');
 
-// Key TMDB Cadangan (Langsung panggil TMDB API)
-const TMDB_KEYS = [
-  '15d2ea6d0dc1d476efbca3ecc92bfe30',
-  '2b9b7754378f4b50570b65103c8091a1',
-  '8414b54e22301f2382e382b6140d3419'
-];
-
+// Helper Ambil Data
 async function fetchAPI(params) {
   try {
-    const apiKey = TMDB_KEYS[Math.floor(Math.random() * TMDB_KEYS.length)];
-    let url = '';
-
-    if (params.action === 'rating') {
-      url = `https://api.themoviedb.org/3/movie/top_rated?api_key=${apiKey}&include_adult=false`;
-    } else if (params.action === 'search' && params.query) {
-      url = `https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${encodeURIComponent(params.query)}&include_adult=false`;
-    } else if (params.slug) {
-      url = `https://api.themoviedb.org/3/movie/${params.slug}?api_key=${apiKey}`;
-    } else {
-      url = `https://api.themoviedb.org/3/trending/movie/week?api_key=${apiKey}&include_adult=false`;
-    }
-
-    const res = await fetch(url);
-    const data = await res.json();
-
-    // Jika ambil detail film untuk pemutar video
-    if (params.slug) {
-      if (!data.id) return null;
-      return {
-        title: data.title || data.original_title,
-        serverPlayer: [
-          { server: 'Server 1 (VidSrc)', embed: `https://vidsrc.to/embed/movie/${data.id}` },
-          { server: 'Server 2 (Autoembed)', embed: `https://player.autoembed.cc/embed/movie/${data.id}` },
-          { server: 'Server 3 (Embed.su)', embed: `https://embed.su/embed/movie/${data.id}` }
-        ]
-      };
-    }
-
-    // Jika ambil daftar film (Home, Rating, Search)
-    if (!data.results) return [];
-    return data.results.map(m => ({
-      title: m.title || m.original_title,
-      thumbnail: m.poster_path ? `https://image.tmdb.org/t/p/w500${m.poster_path}` : 'https://via.placeholder.com/300x450?text=No+Image',
-      slug: m.id.toString()
-    }));
+    const queryStr = new URLSearchParams(params).toString();
+    const res = await fetch(`${API_BASE}?${queryStr}`);
+    const json = await res.json();
+    return json.status === 'success' ? json.data : [];
   } catch (err) {
     console.error('Gagal mengambil data:', err);
     return [];
@@ -73,7 +37,7 @@ function renderMovies(movies) {
     card.className = 'movie-card';
     card.innerHTML = `
       <div class="poster-wrapper">
-        <img src="${movie.thumbnail}" alt="${movie.title}" loading="lazy">
+        <img src="${movie.thumbnail || 'https://via.placeholder.com/300x450?text=No+Image'}" alt="${movie.title}" loading="lazy">
       </div>
       <div class="card-info">
         <div class="card-title" title="${movie.title}">${movie.title}</div>
