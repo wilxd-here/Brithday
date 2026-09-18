@@ -24,9 +24,10 @@ function parseMovieList($) {
   const movies = [];
   $('article.item-infinite, .gmr-box-content article, article.post').each((_, element) => {
     const $el =$(element);
-    const title = $el.find('.entry-title a').text().trim() \vert{}\vert{}$el.find('img').attr('alt')?.trim();
-    const url = $el.find('.entry-title a').attr('href') \vert{}\vert{}$el.find('a').attr('href');
-    const thumbnail = $el.find('img').attr('src') || $el.find('img').attr('data-src') \vert{}\vert{}$el.find('img').attr('data-srcset');
+    const title = $el.find('.entry-title a').text().trim() || $el.find('img').attr('alt')?.trim();
+const url = $el.find('.entry-title a').attr('href') || $el.find('a').attr('href');
+const thumbnail = $el.find('img').attr('src') || $el.find('img').attr('data-src') || $el.find('img').attr('data-srcset');
+
 
     if (url && title) {
       const pathname = new URL(url).pathname;
@@ -95,10 +96,10 @@ async function getMovieDetails(slugOrUrl) {
     const { data } = await axios.get(targetUrl, { headers: { ...headers, Referer: targetUrl } });
     const $ = cheerio.load(data);
 
-    const title = $('h1.entry-title').text().trim() || $('meta[property="og:title"]').attr('content') \vert{}\vert{} $('title').text().trim();
-    const thumbnail = $('.gmr-movie-data img').attr('src') \vert{}\vert{}$('meta[property="og:image"]').attr('content');
-    const description = $('.entry-content.entry-content-single p').first().text().trim() \vert{}\vert{}$('meta[property="og:description"]').attr('content');
-    const rating = $('span[itemprop="ratingValue"]').text().trim() \vert{}\vert{} $('.gmr-meta-rating').text().trim().match(/\d+(\.\d+)?/)?.[0] || 'N/A';
+    const title = $('h1.entry-title').text().trim() || $('meta[property="og:title"]').attr('content') || $('title').text().trim();
+const thumbnail = $('.gmr-movie-data img').attr('src') || $('meta[property="og:image"]').attr('content');
+const description = $('.entry-content.entry-content-single p').first().text().trim() || $('meta[property="og:description"]').attr('content');
+const rating = $('span[itemprop="ratingValue"]').text().trim() || $('.gmr-meta-rating').text().trim().match(/\d+(\.\d+)?/)?.[0] || 'N/A';
 
     const serverPlayer = [];
     const serverTabs = $('ul.muvipro-player-tabs li a');
@@ -128,7 +129,7 @@ async function getMovieDetails(slugOrUrl) {
       }
     } else {
       $('iframe').each((_, element) => {
-        const src = $(element).attr('src') \vert{}\vert{}$(element).attr('data-src');
+        const src = $(element).attr('src') || $(element).attr('data-src');
         if (src && !src.includes('facebook') && !src.includes('twitter')) {
           serverPlayer.push({ server: 'Server 1', embed: src.startsWith('//') ? `https:${src}` : src });
         }
