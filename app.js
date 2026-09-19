@@ -1,7 +1,7 @@
 const API_BASE = '/api/will-movies'; 
 
 // Elemen DOM dari UI Baru
-const mainContent = document.querySelector('main') || document.body; // Tempat injeksi view baru
+const mainContent = document.querySelector('main') || document.body;
 const movieContainer = document.getElementById('movie-container');
 const heroBanner = document.getElementById('hero-banner');
 const navItems = document.querySelectorAll('.nav-item');
@@ -11,7 +11,6 @@ const searchIcons = document.querySelectorAll('.fa-magnifying-glass');
 // 1. INJEKSI HALAMAN DETAIL & MODAL SEARCH
 // ==========================================
 function createDynamicViews() {
-  // Tambahkan CSS Helper untuk Toggle & Styling Halaman Detail
   const style = document.createElement('style');
   style.innerHTML = `
     .d-none { display: none !important; }
@@ -22,9 +21,15 @@ function createDynamicViews() {
     .detail-header button { background: none; border: none; color: var(--text-main); font-size: 1.2rem; cursor: pointer; }
     .detail-header h3 { font-size: 1rem; font-weight: 500; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 70%; }
     
-    /* Video Player */
-    .player-wrapper { position: relative; padding-bottom: 56.25%; height: 0; background: #000; width: 100%; }
+    /* Video Player & Loading Animasi (Sesuai Referensi) */
+    .player-wrapper { position: relative; padding-bottom: 56.25%; height: 0; background: #0b0f19; width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); }
     .player-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+    
+    .loading-media { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #000; color: #fff; z-index: 2; transition: opacity 0.3s; }
+    .loading-media i { font-size: 2rem; color: var(--primary); margin-bottom: 10px; animation: spin 1s linear infinite; }
+    .loading-media p { font-size: 1.2rem; font-weight: bold; margin: 0; }
+    .loading-media span { font-size: 0.85rem; color: var(--text-muted); margin-top: 5px; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
     
     /* Utility Actions */
     .player-actions { display: flex; gap: 10px; padding: 15px 20px; border-bottom: 1px solid var(--bg-surface); }
@@ -48,7 +53,7 @@ function createDynamicViews() {
     .meta-rating { display: flex; align-items: center; gap: 4px; color: var(--primary); }
     .synopsis-text { font-size: 0.9rem; line-height: 1.5; color: #ccc; }
 
-    /* Modal Pencarian Tetap Floating */
+    /* Modal Pencarian */
     .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 9999; display: none; align-items: center; justify-content: center; padding: 20px; backdrop-filter: blur(5px); }
     .modal-overlay.active { display: flex; animation: fadeIn 0.3s ease; }
     .search-content { display: flex; width: 100%; max-width: 500px; background: var(--bg-surface); border-radius: 50px; padding: 5px 5px 5px 20px; border: 1px solid rgba(255,255,255,0.2); margin-bottom: 20vh; }
@@ -57,9 +62,8 @@ function createDynamicViews() {
   `;
   document.head.appendChild(style);
 
-  // Injeksi HTML Detail View & Modal Pencarian
   const viewHTML = `
-    <!-- HALAMAN NONTON (Full View) -->
+    <!-- HALAMAN NONTON -->
     <div id="detail-view" class="d-none">
       <div class="detail-header">
         <button id="back-home-btn"><i class="fa-solid fa-arrow-left"></i></button>
@@ -68,7 +72,12 @@ function createDynamicViews() {
       </div>
       
       <div class="player-wrapper">
-        <iframe id="detail-iframe" allowfullscreen></iframe>
+        <div id="loading-overlay" class="loading-media">
+           <i class="fa-solid fa-spinner fa-spin"></i>
+           <p>Fetching Media</p>
+           <span>Trying streaming servers...</span>
+        </div>
+        <iframe id="detail-iframe" allowfullscreen class="d-none"></iframe>
       </div>
       
       <div class="player-actions">
@@ -86,7 +95,7 @@ function createDynamicViews() {
         <h2 id="info-title">Memuat Judul...</h2>
         <div class="movie-meta-info">
           <span class="meta-type">Movie</span>
-          <span id="info-year">2024</span>
+          <span id="info-year">HD</span>
           <span class="meta-rating"><i class="fa-solid fa-star"></i> <span id="info-rating">TBD</span></span>
         </div>
         <p id="info-synopsis" class="synopsis-text">Tengah mengambil detail film...</p>
@@ -110,6 +119,7 @@ createDynamicViews();
 // ==========================================
 const detailView = document.getElementById('detail-view');
 const detailIframe = document.getElementById('detail-iframe');
+const loadingOverlay = document.getElementById('loading-overlay');
 const detailTitle = document.getElementById('detail-title');
 const detailServerGrid = document.getElementById('detail-server-grid');
 const backHomeBtn = document.getElementById('back-home-btn');
@@ -147,7 +157,6 @@ function renderMovies(movies, titleText = "Populer Minggu Ini") {
     return;
   }
 
-  // Setup Hero Banner
   const heroMovie = movies[0];
   if(heroBanner) {
       heroBanner.style.backgroundImage = `url('${heroMovie.thumbnail || 'https://via.placeholder.com/800x600?text=No+Image'}')`;
@@ -160,7 +169,6 @@ function renderMovies(movies, titleText = "Populer Minggu Ini") {
       }
   }
 
-  // Setup Grid
   movies.forEach(movie => {
     const card = document.createElement('div');
     card.className = 'movie-card';
@@ -183,11 +191,11 @@ function toggleToDetailView() {
   if(sectionTitleHome) sectionTitleHome.classList.add('d-none');
   movieContainer.classList.add('d-none');
   detailView.classList.remove('d-none');
-  window.scrollTo(0, 0); // Gulir ke atas
+  window.scrollTo(0, 0); 
 }
 
 function toggleToHomeView() {
-  detailIframe.src = ''; // Hentikan video
+  detailIframe.src = ''; 
   detailView.classList.add('d-none');
   if(heroBanner) heroBanner.classList.remove('d-none');
   if(sectionTitleHome) sectionTitleHome.classList.remove('d-none');
@@ -197,15 +205,37 @@ function toggleToHomeView() {
 backHomeBtn.addEventListener('click', toggleToHomeView);
 
 // ==========================================
-// 6. LOGIKA HALAMAN NONTON (OPEN DETAIL)
+// 6. LOGIKA HALAMAN NONTON (OPEN DETAIL & LOADING)
 // ==========================================
+function showPlayerLoading() {
+  loadingOverlay.classList.remove('d-none');
+  detailIframe.classList.add('d-none');
+}
+
+function hidePlayerLoading() {
+  loadingOverlay.classList.add('d-none');
+  detailIframe.classList.remove('d-none');
+}
+
+// Deteksi saat Iframe selesai dimuat (menghilangkan layar hitam "Fetching Media")
+detailIframe.addEventListener('load', () => {
+  if (detailIframe.src && detailIframe.src !== window.location.href) {
+    hidePlayerLoading();
+  }
+});
+
 async function openMovieDetail(slug) {
+  // Transisi UI seketika
   toggleToDetailView();
   detailTitle.textContent = 'Memuat Data...';
   infoTitle.textContent = 'Memuat Judul...';
   detailServerGrid.innerHTML = '<p class="server-hint">Mencari server...</p>';
+  
+  // Tampilkan layar "Fetching Media"
   detailIframe.src = '';
+  showPlayerLoading();
 
+  // Memanggil API Vercel Anda di balik layar
   const detail = await fetchAPI({ slug });
 
   if (detail && detail.serverPlayer && detail.serverPlayer.length > 0) {
@@ -213,16 +243,13 @@ async function openMovieDetail(slug) {
     detailTitle.textContent = mainTitle;
     infoTitle.textContent = mainTitle;
     
-    // Opsional: Isi deskripsi jika dari API mendukung, jika tidak pakai fallback
     document.getElementById('info-synopsis').textContent = detail.synopsis || `Menonton film ${mainTitle} dengan kualitas HD. Silakan pilih server di atas jika video lambat atau tidak dapat diputar.`;
     
-    // Render Grid Server sesuai desain baru
     detailServerGrid.innerHTML = '';
     detail.serverPlayer.forEach((srv, index) => {
       const btn = document.createElement('button');
       btn.className = `server-btn-grid ${index === 0 ? 'active' : ''}`;
       
-      // Ikon bintang hanya muncul di server yang aktif (mirip referensi)
       btn.innerHTML = `
         <div style="display:flex; align-items:center;">
             <span class="dot"></span> ${srv.server}
@@ -232,17 +259,19 @@ async function openMovieDetail(slug) {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.server-btn-grid').forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
+        showPlayerLoading(); // Tampilkan loading lagi jika ganti server
         detailIframe.src = srv.embed;
       });
       detailServerGrid.appendChild(btn);
     });
 
-    // Otomatis putar server pertama
+    // Mulai memuat server pertama (Trigger iframe load)
     detailIframe.src = detail.serverPlayer[0].embed;
   } else {
     detailTitle.textContent = 'Video Tidak Tersedia';
     infoTitle.textContent = 'Data tidak ditemukan';
     detailServerGrid.innerHTML = '<p class="server-hint" style="color:red;">Tidak ada server aktif.</p>';
+    loadingOverlay.innerHTML = '<p style="color:red;">Video Tidak Ditemukan</p>';
   }
 }
 
@@ -267,6 +296,7 @@ async function executeSearch(query) {
   renderMovies(movies, `Hasil: "${query}"`);
 }
 
+// Menjalankan pencarian dari tombol header atas (jika ada)
 searchIcons.forEach(icon => {
   icon.parentElement.addEventListener('click', (e) => {
     e.preventDefault();
@@ -279,7 +309,7 @@ searchIcons.forEach(icon => {
 function triggerSearch() {
   const query = searchInputModal.value.trim();
   if (query !== '') {
-    toggleToHomeView(); // Pastikan kembali ke grid jika sedang di halaman detail
+    toggleToHomeView(); 
     executeSearch(query);
     searchModal.classList.remove('active');
   }
@@ -290,26 +320,39 @@ searchInputModal.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') triggerSearch();
 });
 
-// Tutup pencarian bila klik background hitam
 window.addEventListener('click', (e) => {
   if (e.target === searchModal) {
     searchModal.classList.remove('active');
   }
 });
 
+// LOGIKA NAVIGASI BAWAH YANG SUDAH DIPERBAIKI (Tombol Cari Berfungsi)
 navItems.forEach(btn => {
   btn.addEventListener('click', (e) => {
     e.preventDefault();
     const text = btn.querySelector('span').textContent.toLowerCase();
     
+    // Jangan ubah status aktif jika klik simpan atau cari
     if(text !== 'cari' && text !== 'simpan') {
       navItems.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
     }
 
-    if (text === 'beranda') { toggleToHomeView(); loadHome(); }
-    else if (text === 'trending') { toggleToHomeView(); loadRating(); }
-    else if (text === 'simpan') alert("Fitur Simpan (Bookmark) akan segera hadir!");
+    if (text === 'beranda') { 
+      toggleToHomeView(); loadHome(); 
+    }
+    else if (text === 'trending') { 
+      toggleToHomeView(); loadRating(); 
+    }
+    // PERBAIKAN: Fungsi klik untuk tombol CARI di bawah
+    else if (text === 'cari') { 
+      searchModal.classList.add('active');
+      searchInputModal.value = '';
+      setTimeout(() => searchInputModal.focus(), 100);
+    }
+    else if (text === 'simpan') {
+      alert("Fitur Simpan (Bookmark) akan segera hadir!");
+    }
   });
 });
 
