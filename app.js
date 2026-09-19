@@ -1,17 +1,61 @@
-const API_BASE = '/api/will-movies'; // <-- Diubah mengarah ke serverless function Vercel
+const API_BASE = '/api/will-movies'; // API Anda tetap dipertahankan
 
+// Elemen DOM dari UI Baru
 const movieContainer = document.getElementById('movie-container');
-const searchInput = document.getElementById('search-input');
-const filterBtns = document.querySelectorAll('.filter-btn');
-const sectionHeading = document.getElementById('section-heading');
+const heroBanner = document.getElementById('hero-banner');
+const heroTitle = document.getElementById('hero-title');
+const heroMeta = document.getElementById('hero-meta');
+const navItems = document.querySelectorAll('.nav-item');
+const searchIcons = document.querySelectorAll('.fa-magnifying-glass'); // Ikon pencarian di header dan navbar
 
+// ==========================================
+// 1. INJEKSI MODAL STREAMING SECARA DINAMIS
+// ==========================================
+function createModalHTML() {
+  if (document.getElementById('player-modal')) return;
+  const modalHTML = `
+    <div id="player-modal" class="modal-overlay">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 id="modal-movie-title">Memuat Pemutar...</h3>
+          <button id="close-modal"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="iframe-container">
+          <iframe id="player-iframe" allowfullscreen></iframe>
+        </div>
+        <div id="server-list" class="server-list"></div>
+      </div>
+    </div>
+  `;
+  document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+  const style = document.createElement('style');
+  style.innerHTML = `
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 999; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .modal-overlay.active { display: flex; }
+    .modal-content { background: var(--bg-surface); width: 100%; max-width: 800px; border-radius: var(--radius-md); overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+    .modal-header { display: flex; justify-content: space-between; padding: 15px 20px; background: var(--bg-main); border-bottom: 1px solid var(--bg-surface-hover); }
+    #close-modal { background: none; border: none; color: var(--text-main); font-size: 1.2rem; cursor: pointer; }
+    .iframe-container { position: relative; padding-bottom: 56.25%; height: 0; }
+    .iframe-container iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+    .server-list { display: flex; gap: 10px; padding: 15px; overflow-x: auto; background: var(--bg-main); scrollbar-width: none; }
+    .server-btn { padding: 8px 16px; background: var(--bg-surface-hover); color: var(--text-main); border: none; border-radius: var(--radius-sm); font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: 0.3s; }
+    .server-btn.active { background: var(--primary); font-weight: bold; color: #fff;}
+  `;
+  document.head.appendChild(style);
+}
+createModalHTML();
+
+// Deklarasi ulang elemen modal setelah diinjeksi
 const modal = document.getElementById('player-modal');
 const closeModalBtn = document.getElementById('close-modal');
 const modalTitle = document.getElementById('modal-movie-title');
 const playerIframe = document.getElementById('player-iframe');
 const serverList = document.getElementById('server-list');
 
-// Helper Ambil Data
+// ==========================================
+// 2. HELPER FETCH API
+// ==========================================
 async function fetchAPI(params) {
   try {
     const queryStr = new URLSearchParams(params).toString();
@@ -24,79 +68,103 @@ async function fetchAPI(params) {
   }
 }
 
-// Render Kartu Film
-function renderMovies(movies) {
+// ==========================================
+// 3. RENDER UI UTAMA (HERO BANNER & GRID)
+// ==========================================
+function renderMovies(movies, titleText = "Populer Minggu Ini") {
+  // Ubah teks judul section
+  const sectionTitle = document.querySelector('.section-title span');
+  if(sectionTitle) sectionTitle.textContent = titleText;
+
   movieContainer.innerHTML = '';
+
   if (!movies || movies.length === 0) {
-    movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #94a3b8;">Film tidak ditemukan.</p>';
+    movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); margin-top: 20px;">Film tidak ditemukan.</p>';
     return;
   }
 
+  // --- Setup Hero Banner (Ambil dari film urutan pertama) ---
+  const heroMovie = movies[0];
+  heroBanner.style.backgroundImage = `url('${heroMovie.thumbnail || 'https://via.placeholder.com/800x600?text=No+Image'}')`;
+  heroTitle.textContent = heroMovie.title;
+  heroMeta.innerHTML = `<span><i class="fa-solid fa-star"></i> N/A</span><span>HD</span>`;
+  
+  // Sambungkan tombol "Tonton" di Hero Banner ke Modal
+  const btnTontonHero = document.querySelector('.btn-tonton');
+  if(btnTontonHero) {
+    // Kloning tombol untuk mereset EventListener lama jika ada
+    const newBtn = btnTontonHero.cloneNode(true);
+    btnTontonHero.parentNode.replaceChild(newBtn, btnTontonHero);
+    newBtn.addEventListener('click', () => openMovieDetail(heroMovie.slug));
+  }
+
+  // --- Setup Grid Movies (Tampilkan semua) ---
   movies.forEach(movie => {
     const card = document.createElement('div');
     card.className = 'movie-card';
     card.innerHTML = `
-      <div class="poster-wrapper">
-        <img src="${movie.thumbnail || 'https://via.placeholder.com/300x450?text=No+Image'}" alt="${movie.title}" loading="lazy">
-      </div>
-      <div class="card-info">
-        <div class="card-title" title="${movie.title}">${movie.title}</div>
-      </div>
+      <img src="${movie.thumbnail || 'https://via.placeholder.com/300x450?text=No+Image'}" class="poster" alt="${movie.title}" loading="lazy">
+      <div class="rating-badge"><i class="fa-solid fa-star"></i> -.-</div>
+      <div class="card-title" title="${movie.title}">${movie.title}</div>
+      <div class="card-year">HD</div>
     `;
+    // Buka detail (Modal Streaming) jika kartu diklik
     card.addEventListener('click', () => openMovieDetail(movie.slug));
     movieContainer.appendChild(card);
   });
 }
 
-// Load Home
+// ==========================================
+// 4. LOGIKA LOAD & PENCARIAN
+// ==========================================
 async function loadHome() {
-  sectionHeading.textContent = 'Film Terbaru';
-  movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #94a3b8;">Memuat film...</p>';
+  movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); margin-top: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat film...</p>';
   const movies = await fetchAPI({ action: 'home' });
-  renderMovies(movies);
+  renderMovies(movies, "Terbaru Ditambahkan");
 }
 
-// Load Rating
 async function loadRating() {
-  sectionHeading.textContent = 'Rating Terbaik';
-  movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #94a3b8;">Memuat film...</p>';
+  movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); margin-top: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat film...</p>';
   const movies = await fetchAPI({ action: 'rating' });
-  renderMovies(movies);
+  renderMovies(movies, "Rating Terbaik");
 }
 
-// Fitur Search
-let searchTimer;
-searchInput.addEventListener('input', (e) => {
-  clearTimeout(searchTimer);
-  const query = e.target.value.trim();
-  
-  if (!query) {
-    loadHome();
-    return;
-  }
+async function searchMovie(query) {
+  movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-muted); margin-top: 20px;"><i class="fa-solid fa-spinner fa-spin"></i> Mencari film...</p>';
+  const movies = await fetchAPI({ action: 'search', query });
+  renderMovies(movies, `Hasil: "${query}"`);
+}
 
-  searchTimer = setTimeout(async () => {
-    sectionHeading.textContent = `Hasil Pencarian: "${query}"`;
-    movieContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #94a3b8;">Mencari film...</p>';
-    const movies = await fetchAPI({ action: 'search', query });
-    renderMovies(movies);
-  }, 500);
-});
-
-// Fitur Navigasi Filter
-filterBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    filterBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    searchInput.value = '';
-
-    const filter = btn.getAttribute('data-filter');
-    if (filter === 'home') loadHome();
-    if (filter === 'rating') loadRating();
+// Fitur Pencarian via Prompt (Karena di UI baru belum ada input form)
+searchIcons.forEach(icon => {
+  icon.parentElement.addEventListener('click', (e) => {
+    e.preventDefault();
+    const query = prompt("Cari judul film:");
+    if (query && query.trim() !== '') {
+      searchMovie(query.trim());
+    }
   });
 });
 
-// Detail Film & Player Streaming Modal
+// Fitur Navigasi Bawah
+navItems.forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    const text = btn.querySelector('span').textContent.toLowerCase();
+    
+    // Jangan hapus status aktif jika klik cari, agar tab yang lama tetap menyala
+    if(text !== 'cari') {
+      navItems.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    }
+
+    if (text === 'beranda') loadHome();
+    if (text === 'trending') loadRating();
+  });
+});
+
+// ==========================================
+// 5. MODAL STREAMING (SAMA SEPERTI KODE ASLI)
+// ==========================================
 async function openMovieDetail(slug) {
   modalTitle.textContent = 'Memuat Pemutar...';
   playerIframe.src = '';
@@ -139,5 +207,7 @@ window.addEventListener('click', (e) => {
   }
 });
 
-// Inisialisasi awal
+// ==========================================
+// INISIALISASI AWAL
+// ==========================================
 loadHome();

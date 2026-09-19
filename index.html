@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>willMovies X xaerisoft</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Willmovies</title>
 
   <!-- Font & FontAwesome Icon -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,15 +13,17 @@
   
   <style>
     :root {
-      --bg-main: #070a12;
-      --bg-card: #0f172a;
-      --bg-card-hover: #1e293b;
-      --accent: #2563eb;
-      --accent-glow: rgba(37, 99, 235, 0.35);
+      /* Tema Biru Hitam */
+      --bg-main: #020617; /* Hitam kebiruan pekat */
+      --bg-surface: #0f172a; /* Biru dongker gelap */
+      --bg-surface-hover: #1e293b;
+      --primary: #3b82f6; /* Biru terang (aksen) */
+      --primary-glow: rgba(59, 130, 246, 0.3);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
-      --border: #1e293b;
-      --radius: 12px;
+      --radius-sm: 8px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
     }
 
     * {
@@ -29,6 +31,7 @@
       padding: 0;
       box-sizing: border-box;
       font-family: 'Plus Jakarta Sans', sans-serif;
+      -webkit-tap-highlight-color: transparent;
     }
 
     body {
@@ -37,352 +40,280 @@
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      padding-bottom: 80px;
     }
 
-    /* Navbar Glassmorphism */
-    .navbar {
+    /* Top App Bar */
+    .top-bar {
       position: sticky;
       top: 0;
-      z-index: 100;
-      background: rgba(7, 10, 18, 0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 1rem 5%;
+      z-index: 50;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      padding: 16px 20px;
+      background: linear-gradient(to bottom, rgba(2,6,23,0.95) 0%, rgba(2,6,23,0) 100%);
     }
 
     .brand {
-      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1.25rem;
       font-weight: 800;
-      text-decoration: none;
       color: var(--text-main);
+      text-decoration: none;
       letter-spacing: -0.5px;
     }
 
-    .brand span {
-      color: var(--accent);
+    .brand i { color: var(--primary); font-size: 1.1rem; }
+    
+    .top-actions {
+      display: flex;
+      gap: 15px;
+      font-size: 1.2rem;
+      color: var(--text-muted);
     }
 
-    .search-container {
+    /* Hero Banner (Diisi oleh JS) */
+    .hero-banner {
       position: relative;
-      width: 300px;
-    }
-
-    .search-container input {
       width: 100%;
-      padding: 10px 16px 10px 40px;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      color: var(--text-main);
-      font-size: 0.88rem;
-      outline: none;
-      transition: all 0.3s ease;
+      height: 60vh;
+      min-height: 400px;
+      margin-top: -70px;
+      background-color: var(--bg-surface);
+      background-size: cover;
+      background-position: top center;
+      transition: background-image 0.5s ease-in-out;
     }
 
-    .search-container input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 15px var(--accent-glow);
-    }
-
-    .search-container i {
+    .hero-overlay {
       position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
-    }
-
-    /* Hero Banner Section */
-    .hero {
-      position: relative;
-      margin: 20px 5%;
-      min-height: 280px;
-      border-radius: 20px;
-      overflow: hidden;
-      background: linear-gradient(135deg, #1e1b4b, #0f172a, #070a12);
-      display: flex;
-      align-items: center;
-      padding: 40px;
-      border: 1px solid var(--border);
-    }
-
-    .hero-content {
-      max-width: 600px;
-      z-index: 2;
-    }
-
-    .badge {
-      display: inline-block;
-      background: var(--accent);
-      color: #fff;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      letter-spacing: 0.5px;
-    }
-
-    .hero h1 {
-      font-size: 2.2rem;
-      font-weight: 800;
-      line-height: 1.2;
-      margin-bottom: 12px;
-    }
-
-    .hero p {
-      color: var(--text-muted);
-      font-size: 0.95rem;
-      line-height: 1.5;
-    }
-
-    /* Filter Bar */
-    .filter-bar {
-      padding: 0 5%;
-      margin: 15px 0 10px 0;
-      display: flex;
-      gap: 10px;
-      overflow-x: auto;
-    }
-
-    .filter-btn {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
-      padding: 8px 20px;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-
-    .filter-btn.active, .filter-btn:hover {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-      box-shadow: 0 4px 12px var(--accent-glow);
-    }
-
-    .section-title {
-      padding: 10px 5% 0 5%;
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
-
-    /* Grid Film Modern */
-    .movie-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
-      gap: 20px;
-      padding: 20px 5%;
-    }
-
-    .movie-card {
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      overflow: hidden;
-      border: 1px solid var(--border);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      cursor: pointer;
-    }
-
-    .movie-card:hover {
-      transform: translateY(-6px);
-      border-color: var(--accent);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5), 0 0 15px var(--accent-glow);
-    }
-
-    .poster-wrapper {
-      position: relative;
-      width: 100%;
-      aspect-ratio: 2/3;
-      overflow: hidden;
-      background: #121824;
-    }
-
-    .poster-wrapper img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.3s ease;
-    }
-
-    .movie-card:hover .poster-wrapper img {
-      transform: scale(1.06);
-    }
-
-    .card-info {
-      padding: 12px;
-    }
-
-    .card-title {
-      font-size: 0.88rem;
-      font-weight: 600;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: var(--text-main);
-    }
-
-    /* Modal Player Streaming */
-    .modal {
-      display: none;
-      position: fixed;
       inset: 0;
-      z-index: 1000;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(8px);
-      align-items: center;
-      justify-content: center;
+      background: linear-gradient(to top, var(--bg-main) 0%, rgba(2,6,23,0.4) 50%, rgba(2,6,23,0.8) 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
       padding: 20px;
     }
 
-    .modal.active {
+    .badge-series {
+      align-self: flex-start;
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+      letter-spacing: 1px;
+    }
+
+    .hero-title {
+      font-size: 2.5rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      line-height: 1.1;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 10px rgba(0,0,0,0.8);
+    }
+
+    .hero-meta {
       display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin-bottom: 20px;
+      font-weight: 600;
     }
 
-    .modal-content {
-      background: var(--bg-card);
-      width: 100%;
-      max-width: 900px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      overflow: hidden;
+    .hero-meta i { color: var(--primary); }
+
+    .hero-buttons { display: flex; gap: 12px; }
+
+    .btn-tonton {
+      flex: 1;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px var(--primary-glow);
     }
 
-    .modal-header {
-      padding: 16px 20px;
+    .btn-detail {
+      flex: 1;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(8px);
+      color: var(--text-main);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 14px;
+      border-radius: var(--radius-md);
+      font-size: 1rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    /* Header Section */
+    .section-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--border);
+      padding: 20px 20px 10px 20px;
     }
 
-    .close-btn {
-      background: none;
-      border: none;
-      color: var(--text-muted);
-      font-size: 1.5rem;
+    .section-title { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;}
+    .section-title span { display: block; font-size: 1.3rem; font-weight: 800; color: var(--text-main); text-transform: none; margin-top: 5px; }
+    .see-all { color: var(--primary); font-size: 0.9rem; text-decoration: none; font-weight: 600; }
+
+    /* Grid Film (Diisi oleh JS) */
+    .movie-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+      gap: 16px;
+      padding: 10px 20px;
+    }
+
+    .movie-card {
+      position: relative;
       cursor: pointer;
+      transition: transform 0.2s;
     }
+    
+    .movie-card:active { transform: scale(0.95); }
 
-    .close-btn:hover {
-      color: #fff;
-    }
-
-    .iframe-container {
+    .poster {
       width: 100%;
-      aspect-ratio: 16/9;
-      background: #000;
+      aspect-ratio: 2/3;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+      background: var(--bg-surface);
+      margin-bottom: 8px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
     }
 
-    .iframe-container iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-    }
-
-    .server-selector {
-      padding: 15px 20px;
+    .rating-badge {
+      position: absolute;
+      bottom: 60px;
+      left: 8px;
+      background: rgba(2, 6, 23, 0.8);
+      backdrop-filter: blur(4px);
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
       display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      background: var(--bg-main);
+      align-items: center;
+      gap: 4px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .rating-badge i { color: var(--primary); font-size: 0.7rem; }
+
+    .card-title { font-size: 0.9rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-year { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+    /* Navigasi Bawah */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: rgba(2, 6, 23, 0.95);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--bg-surface);
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 10px 20px 10px;
+      z-index: 100;
     }
 
-    .server-btn {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 6px 14px;
-      border-radius: 8px;
-      font-size: 0.8rem;
-      cursor: pointer;
-    }
-
-    .server-btn.active {
-      background: var(--accent);
-      border-color: var(--accent);
-    }
-
-    /* Footer */
-    footer {
-      margin-top: auto;
-      background: var(--bg-card);
-      border-top: 1px solid var(--border);
-      padding: 25px 5%;
-      text-align: center;
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
       color: var(--text-muted);
-      font-size: 0.85rem;
+      text-decoration: none;
+      font-size: 0.75rem;
+      font-weight: 500;
+      width: 60px;
+      transition: color 0.2s;
     }
 
-    @media (max-width: 600px) {
-      .hero { padding: 25px; }
-      .hero h1 { font-size: 1.5rem; }
-      .movie-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 12px; }
-      .search-container { width: 170px; }
-    }
+    .nav-item i { font-size: 1.4rem; padding: 10px; border-radius: 50%; transition: all 0.3s; }
+    .nav-item.active { color: var(--text-main); }
+    .nav-item.active i { background: var(--primary); color: #fff; transform: translateY(-5px); box-shadow: 0 4px 15px var(--primary-glow); }
+
   </style>
 </head>
 <body>
 
-  <!-- Header & Nav -->
-  <nav class="navbar">
-    <a href="/" class="brand">will<span>Movies</span></a>
-    <div class="search-container">
+  <!-- Header -->
+  <header class="top-bar">
+    <a href="/" class="brand">
+      <i class="fa-solid fa-play"></i> Willmovies
+    </a>
+    <div class="top-actions">
       <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" id="search-input" placeholder="Cari film favorit...">
+      <i class="fa-solid fa-ellipsis-vertical"></i>
     </div>
-  </nav>
+  </header>
 
   <!-- Hero Section -->
-  <section class="hero">
-    <div class="hero-content">
-      <span class="badge">willMovies Exclusive</span>
-      <h1 id="hero-title">Nonton Film Gratis Tanpa Batas</h1>
-      <p id="hero-desc">Saksikan ribuan film dan series populer dalam kualitas tinggi secara gratis.</p>
+  <section class="hero-banner" id="hero-banner">
+    <div class="hero-overlay">
+      <span class="badge-series" id="hero-badge">TRENDING</span>
+      <h1 class="hero-title" id="hero-title">Memuat...</h1>
+      <div class="hero-meta" id="hero-meta">
+        <span><i class="fa-solid fa-star"></i> -.-</span>
+        <span>----</span>
+      </div>
+      <div class="hero-buttons">
+        <button class="btn-tonton"><i class="fa-solid fa-play"></i> Tonton</button>
+        <button class="btn-detail"><i class="fa-solid fa-circle-info"></i> Detail</button>
+      </div>
     </div>
   </section>
 
-  <!-- Filter Menu -->
-  <div class="filter-bar">
-    <button class="filter-btn active" data-filter="home">Film Terbaru</button>
-    <button class="filter-btn" data-filter="rating">Rating Terbaik</button>
+  <!-- Grid Film Populer -->
+  <div class="section-header">
+    <h2 class="section-title">Lagi Ramai Ditonton <span>Populer Minggu Ini</span></h2>
+    <a href="#" class="see-all">Semua &gt;</a>
   </div>
-
-  <h2 class="section-title" id="section-heading">Rekomendasi Utama</h2>
-
-  <!-- Container Grid Film (Tempat app.js merender film) -->
+  
   <main class="movie-grid" id="movie-container">
-    <!-- Konten film diisi otomatis dari app.js -->
+    <!-- Konten akan dirender oleh JavaScript dari API -->
   </main>
 
-  <!-- Streaming Player Modal -->
-  <div class="modal" id="player-modal">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h3 id="modal-movie-title">Memuat Pemutar...</h3>
-        <button class="close-btn" id="close-modal">&times;</button>
-      </div>
-      <div class="iframe-container">
-        <iframe id="player-iframe" src="" allowfullscreen></iframe>
-      </div>
-      <div class="server-selector" id="server-list">
-        <!-- Daftar tombol server streaming -->
-      </div>
-    </div>
-  </div>
-
-  <!-- Footer -->
-  <footer>
-    <p>&copy; 2026 <strong>willMovies</strong>. All rights reserved.</p>
-  </footer>
+  <!-- Navigasi Bawah -->
+  <nav class="bottom-nav">
+    <a href="#" class="nav-item active">
+      <i class="fa-solid fa-house"></i>
+      <span>Beranda</span>
+    </a>
+    <a href="#" class="nav-item">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <span>Cari</span>
+    </a>
+    <a href="#" class="nav-item">
+      <i class="fa-solid fa-fire"></i>
+      <span>Trending</span>
+    </a>
+    <a href="#" class="nav-item">
+      <i class="fa-solid fa-bookmark"></i>
+      <span>Simpan</span>
+    </a>
+  </nav>
 
   <script src="app.js"></script>
 </body>
