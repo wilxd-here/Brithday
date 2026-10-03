@@ -1,8 +1,20 @@
 {
   "rewrites": [
     {
-      "source": "/api/will-movies",
-      "destination": "/api/will-movies.js"
+      "source": "/wilstream",
+      "destination": "https://wildev-ruby.vercel.app/"
+    },
+    {
+      "source": "/wilstream/:match*",
+      "destination": "https://wildev-ruby.vercel.app/:match*"
+    },
+    {
+      "source": "/assets/:match*",
+      "destination": "https://wildev-ruby.vercel.app/assets/:match*"
+    },
+    {
+      "source": "/js/:match*",
+      "destination": "https://wildev-ruby.vercel.app/js/:match*"
     }
   ]
 }
